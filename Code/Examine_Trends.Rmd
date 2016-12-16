@@ -1,0 +1,106 @@
+---
+title: "Infant Mortality"
+author: "Corinne Riddell"
+date: "December 16, 2016"
+output: html_document
+---
+```{r, echo=F, warning=F, message=F}
+library(ggplot2)
+library(plotly)
+library(dplyr)
+```
+
+```{r setup_data, echo=F}
+im.dat <-  read.csv("/Users/corinneriddell/Documents/repos/InfantMortality/Data/InfantMortalityData.csv",
+                      header = T)
+
+imdat.subset <- im.dat %>% 
+  filter(Race %in% c("Black or African American", "White"),
+         Hispanic_Origin == "Not Hispanic or Latino") %>%
+  select(Race, Year, Gender, Deaths, Population, Crude_Rate) %>%
+  mutate(Race = relevel(Race, ref = "White")) %>%
+  mutate(Race = droplevels(Race)) %>%
+  mutate(Race = plyr::revalue(Race, c("White"="White", "Black or African American"="Black")),
+         #Group = interaction(Race, Gender, sep= " "),
+         Population = as.numeric(as.character(Population)),
+         RatePer1000 = (Deaths/Population)*1000)
+
+black <- subset(imdat.subset, Race == "Black") %>% 
+  select(Year, Gender, RatePer1000, Population, Deaths) %>%
+  rename(Black_IMR = RatePer1000, Black.Pop = Population,
+         Black.Deaths = Deaths)
+
+white <- subset(imdat.subset, Race == "White") %>% 
+  select(Year, Gender, RatePer1000, Population, Deaths) %>%
+  rename(White_IMR = RatePer1000, White.Pop = Population,
+         White.Deaths = Deaths)
+
+both <- merge(black, white, by = c("Year", "Gender"))
+both <- both %>% mutate(RR = Black_IMR/White_IMR, RD = Black_IMR - White_IMR)
+
+aggregate.sex <- both %>% group_by(Year) %>%
+  summarise(Black.Pop = sum(Black.Pop), White.Pop = sum(White.Pop),
+            Black.Deaths = sum(Black.Deaths), White.Deaths = sum(White.Deaths)) %>%
+  mutate(Black_IMR = (Black.Deaths/Black.Pop)*1000,
+         White_IMR = (White.Deaths/White.Pop)*1000) %>%
+  mutate(RR = Black_IMR/White_IMR, RD = Black_IMR - White_IMR,
+         Gender = "Both Genders")
+
+both2 <- rbind(both, aggregate.sex)
+```
+
+```{r imr_plot, echo=F, fig.width=9, fig.height=3}
+ggplot(both2, aes(x = Year, y = Black_IMR))  + 
+  geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
+  geom_line(aes(col = "Black"), lwd = 1.5) + 
+  geom_line(aes(y = White_IMR, col = "White"), lwd = 1.5) +
+  facet_wrap(~ Gender) + ylab("Infant Mortality Rate (per 1000)") +
+  scale_color_manual(values = c("#b2182b", "#2166ac")) +
+  theme_minimal()
+```
+
+```{r RR_plot, echo=F, fig.width=8, fig.height=2}
+ggplot(both2, aes(x = Year, y = RR))  + 
+  geom_line(lwd = 1.5) + 
+  facet_wrap(~ Gender) + ylab("Risk Ratio") +
+  ylab("Risk Ratio") +
+  theme_minimal()
+```
+
+```{r RD_plot, echo=F, fig.width=8, fig.height=2}
+ggplot(both2, aes(x = Year, y = RD))  + 
+  geom_line(lwd = 1.5) + 
+  facet_wrap(~ Gender) + ylab("Risk Difference") +
+  ylab("Risk Difference") +
+  theme_minimal()
+```
+
+```{r more_plots, echo=F, eval=F}
+a <- ggplotly(
+ggplot(both, aes(y = RR, x = Year)) + geom_line() +
+  theme_minimal() + facet_wrap(~ Gender) + ylab("")) %>%
+  layout(yaxis = list(title = "Risk Ratio"))
+
+b <- ggplotly(
+ggplot(both, aes(y = RD, x = Year)) + geom_line() +
+  theme_minimal() + facet_wrap(~ Gender) + ylab("")) %>%
+  layout(yaxis = list(title = "Risk Difference"))
+
+c <- ggplotly( 
+ggplot(both, aes(y = Black_IMR, x = Year)) +
+  geom_ribbon(aes(ymin = Black_IMR, ymax = White_IMR), col = "grey", alpha = 0.2) +
+  facet_wrap(~ Gender) + 
+  geom_line(col = "#b2182b") + 
+  geom_line(aes(y = White_IMR), col = "#2166ac") +
+  theme_minimal() + ylab("")) %>%
+  layout(yaxis = list(title = "Infant Mortality Rate"))
+
+subplot(c, a, b, nrows = 3, titleY = T)
+
+ggplot(imdat.subset, aes(x = Year, y = RatePer1000)) + 
+  geom_line(aes(col = Race), lwd = 2) +
+  theme_minimal() + facet_wrap(~Gender) +
+  ylab("Infant Mortality Rate (per 1,000)")
+
+```
+
