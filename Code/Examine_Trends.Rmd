@@ -14,7 +14,7 @@ library(grid)
 library(epiR)
 ```
 
-```{r cod_data}
+```{r cod_data, echo=F}
 #read in the CDC wonder COD-specific mortality data
 #for NH blacks and NH whites, stratified by year (1999-2015)
 im.cod.dat <-  read.csv("/Users/corinneriddell/Documents/repos/InfantMortality/Data/InfantMortality_by_COD_cleaned.csv", header = T)
@@ -33,62 +33,61 @@ im.cod.dat <- im.cod.dat %>%
 im.cod.dat$cod_recode <- NA
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == 
                         "#Congenital malformations, deformations and chromosomal abnormalities (Q00-Q99)"] <- "Congenital Malformations"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Congenital Malformations" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Congenital Malformations" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == 
                         "#Disorders related to short gestation and low birth weight, not elsewhere classified (P07)"] <- "Short Gestation/LBW"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Short Gestation/LBW" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Short Gestation/LBW" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Sudden infant death syndrome (R95)"] <- "SIDS"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "SIDS" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "SIDS" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Newborn affected by maternal complications of pregnancy (P01)"] <- "Maternal Complication of Pregnancy"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Maternal Complication of Pregnancy" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Maternal Complication of Pregnancy" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Accidents (unintentional injuries) (V01-X59)"] <- "Accidents"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Accidents" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Accidents" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Newborn affected by complications of placenta, cord and membranes (P02)"] <- "Complications of Placenta, Cord, and Membranes"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Complications of Placenta, Cord, and Membranes" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Complications of Placenta, Cord, and Membranes" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Respiratory distress of newborn (P22)"] <- "Respiratory Distress"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Respiratory Distress" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Respiratory Distress" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Bacterial sepsis of newborn (P36)"] <- "Bacterial Sepsis"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Bacterial Sepsis" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Bacterial Sepsis" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Diseases of the circulatory system (I00-I99)"] <- "Diseases of the Circulatory System"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Diseases of the Circulatory System" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Diseases of the Circulatory System" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Neonatal hemorrhage (P50-P52,P54)"] <- "Neonatal Hemorrhage"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Neonatal Hemorrhage" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Neonatal Hemorrhage" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Intrauterine hypoxia and birth asphyxia (P20-P21)"] <- "Intrauterine hypoxia and birth asphyxia"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Intrauterine hypoxia and birth asphyxia" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Intrauterine hypoxia and birth asphyxia" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Necrotizing enterocolitis of newborn (P77)"] <- "Necrotizing enterocolitis"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Necrotizing enterocolitis" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Necrotizing enterocolitis" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Atelectasis (P28.0-P28.1)"] <- "Atelectasis"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Atelectasis" & is.na(im.cod.dat$cod_recode) == F, ]
-
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Atelectasis" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Assault (homicide) (*U01,X85-Y09)"] <- "Assault"
-table(im.cod.dat$cod_recode)
-im.cod.dat[im.cod.dat$cod_recode == "Assault" & is.na(im.cod.dat$cod_recode) == F, ]
+#table(im.cod.dat$cod_recode)
+#im.cod.dat[im.cod.dat$cod_recode == "Assault" & is.na(im.cod.dat$cod_recode) == F, ]
 
 #only keep these rows of data
 im.cod.dat2 <- im.cod.dat %>% filter(is.na(cod_recode) == F) %>%
@@ -173,79 +172,16 @@ white2 <- subset(im.cod.dat3, Race == "White") %>%
          White.Deaths = Deaths)
 
 both.cod <- merge(black2, white2, by = c("Year", "cod_recode", "cod_recode2"))
+
+both.cod <- both.cod %>% mutate(RR = Black_IMR/White_IMR, RD = Black_IMR - White_IMR,
+                                SD_RD = (((Black.Deaths*(Black.Pop - Black.Deaths))/(Black.Pop^3)) + 
+                                   ((White.Deaths*(White.Pop - White.Deaths))/(White.Pop^3)))^0.5,
+                                UCL_RD = RD + 1.96*SD_RD*1000, LCL_RD = RD - 1.96*SD_RD*1000, 
+                                SD_lnRR = ((1/Black.Deaths)-(1/(Black.Pop-Black.Deaths))+(1/White.Deaths)-(1/(White.Pop-White.Deaths)))^0.5,
+                                UCL_RR = exp(log(RR) + 1.96*SD_lnRR), LCL_RR = exp(log(RR) - 1.96*SD_lnRR))
 ```
 
-```{r COD_trends_IMR}
-ggplot(both.cod, aes(x = Year, y = Black_IMR)) + 
-  geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
-  geom_line(aes(col = "Black")) + facet_wrap(~cod_recode2, scales = "free_y") +
-  geom_line(aes(y = White_IMR, col = "White")) +   
-  theme_minimal() + ylab("Cause-Specific Infant Mortality Rate (per 1,000)") +
-  ggtitle("Trends in cause-specific infant mortality rates over time for black and whites, United States 1999-2015") +
-  scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = ""))
-
-ggplot(subset(both.cod, Year >= 2010), aes(x = Year, y = Black_IMR)) + 
-  geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
-  geom_line(aes(col = "Black")) + facet_wrap(~cod_recode2, scales = "free_y") +
-  geom_line(aes(y = White_IMR, col = "White")) +   
-  theme_minimal() + ylab("Cause-Specific Infant Mortality Rate (per 1,000)") +
-  ggtitle("Trends in cause-specific infant mortality rates over time for black and whites, United States 2010-2015") +
-  scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = ""))
-```
-
--Two years only
--Stacked with largest contributions at the bottom
-
-```{r}
-ggplot(arrange(subset(both.cod, Year >= 2014), desc(cod_recode)), aes(x = Year, y = Black_IMR, fill=cod_recode)) +
-    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
-  ggtitle("Black")
-
-ggplot(arrange(subset(both.cod, Year >= 2014), desc(cod_recode)), aes(x = Year, y = White_IMR, fill=cod_recode)) +
-    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
-  ggtitle("White")
-```
-
--Past five years
--Stacked with largest contributions at the top
-
-```{r}
-ggplot(arrange(subset(both.cod, Year >= 2010), cod_recode), aes(x = Year, y = Black_IMR, fill=cod_recode)) +
-    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
-  ggtitle("Black")
-
-ggplot(arrange(subset(both.cod, Year >= 2010), cod_recode), aes(x = Year, y = White_IMR, fill=cod_recode)) +
-    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
-  ggtitle("White")
-```
-
-```{r COD_RiskRatio}
-both.cod <- both.cod %>% mutate(RR = Black_IMR/White_IMR, RD = Black_IMR - White_IMR)
-
-ggplot(both.cod, aes(x = Year, y = RR))  + 
-  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
-  ylab("Risk Ratio") + facet_wrap(~cod_recode2) +
-  theme_minimal() + ggtitle("Trends in the relative risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
-
-ggplot(subset(both.cod, Year>= 2010), aes(x = Year, y = RR))  + 
-  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
-  ylab("Risk Ratio") + facet_wrap(~cod_recode2) +
-  theme_minimal() + ggtitle("Trends in the relative risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
-```
-
-```{r COD_RiskDifference}
-ggplot(both.cod, aes(x = Year, y = RD))  + 
-  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
-  ylab("Risk Difference (excess deaths per 1,000)") + facet_wrap(~cod_recode2, scales = "free_y") +
-  theme_minimal() + ggtitle("Trends in the excess risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
-
-ggplot(subset(both.cod, Year>= 2010), aes(x = Year, y = RD))  + 
-  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
-  ylab("Risk Difference (excess deaths per 1,000)") + facet_wrap(~cod_recode2, scales = "free_y") +
-  theme_minimal() + ggtitle("Trends in the excess risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
-```
-
-```{r}
+```{r long_to_wide_data, echo=F}
 black <- subset(imdat.subset, Race == "Black") %>% 
   select(Year, Gender, RatePer1000, Population, Deaths) %>%
   rename(Black_IMR = RatePer1000, Black.Pop = Population,
@@ -288,51 +224,28 @@ first <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2010), aes(x = 
   ylab("IMR (per 1,000)") +
   scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = "")) +
   theme_minimal() + theme(legend.position = "top") + ggtitle("a) Infant Mortality Rates (IMR)")
-
-ggplot(both2, aes(x = Year, y = Black_IMR))  + 
-  geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
-  geom_line(aes(col = "Black"), lwd = 1.5) + 
-  geom_line(aes(y = White_IMR, col = "White"), lwd = 1.5) +
-  facet_wrap(~ Gender) + ylab("Infant Mortality Rate (per 1,000)") +
-  scale_color_manual(values = c("#b2182b", "#2166ac")) +
-  theme_minimal()
 ```
 
 ```{r RR_plot, echo=F, fig.width=8, fig.height=2}
 second <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2010), aes(x = Year, y = RR))  + 
-  geom_line(lwd = 1.5) + 
+  geom_line(lwd = 1.5) + geom_ribbon(aes(ymin = LCL_RR, ymax = UCL_RR), col = "grey", alpha = 0.5) + 
   ylab("Risk Ratio") +
   theme_minimal() + ggtitle("b) Relative risk")
-
-ggplot(both2, aes(x = Year, y = RR))  + 
-  geom_line(lwd = 1.5) + 
-  facet_wrap(~ Gender) + ylab("Relative risk") +
-  theme_minimal()
 ```
-
-```{r}
-table.2by2 <-rbind(c(both2$Black.Deaths[1], both2$Black.Pop[1] - both2$Black.Deaths[1]), 
-                   c(both2$White.Deaths[1], both2$White.Pop[1] - both2$White.Deaths[1])) 
-epi.2by2(table.2by2, method = "cohort.count", conf.level = 0.95, units = 1000)
-```
-
 
 ```{r RD_plot, echo=F, fig.width=8, fig.height=2}
 third <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2010), aes(x = Year, y = RD))  + 
-  geom_line(lwd = 1.5) + 
+  geom_line(lwd = 1.5) + geom_ribbon(aes(ymin = LCL_RD, ymax = UCL_RD), col = "grey", alpha = 0.5) +
   ylab("Excess risk (per 1,000)") +
   theme_minimal() + ggtitle("c) Excess risk")
-
-ggplot(both2, aes(x = Year, y = RD))  + 
-  geom_line(lwd = 1.5) + 
-  facet_wrap(~ Gender) +
-  ylab("Excess risk") +
-  theme_minimal()
 ```
 
-```{r all_three, fig.width=8, fig.height=8}
+**Figure 1: Infant mortality, relative risk, and excess risk of death for blacks compared with whites, United States, 2010-2015**
+```{r all_three, fig.width=3.5, fig.height=7, echo=F}
 grid.arrange(first, second, third, nrow = 3, heights = c(0.5, 0.25, 0.25))
 ```
+
+(The plots for the RR and RD contain their 95% CIs.)
 
 Infant mortality for whites decreased from 5.01 deaths per 1,000 in 2014 to 4.95 deaths per 1,000 in 2015. At the same time, infant mortality among black infants increased from 11.01 to 11.23 per 1,000 over the same time period. While the absolute size of this increase among blacks may seem small (~ 0.22 additional deaths per 1,000 infants), it means that an additional 1XX black infants died of those 5XX,XXX born in 2015 (compared to the 2014 level).
 
@@ -343,11 +256,134 @@ Number of black infant deaths in 2015: 6907 for 614972 population
 If blacks had rates of whites in 2015: 3041 for 614972 population
 --> 6907/3041 = 2.27, 6907-3041 = 3866 additional deaths per 614972 --> X per 1000
 
+**Exploration of COD plots**
+
+**1) Trends in COD-specific mortality since 2010**
+
+```{r COD_trends_IMR, echo=F, fig.width=10, fig.height=10}
+ggplot(subset(both.cod, Year >= 2010), aes(x = Year, y = Black_IMR)) + 
+  geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
+  geom_line(aes(col = "Black")) + facet_wrap(~cod_recode2, scales = "free_y") +
+  geom_line(aes(y = White_IMR, col = "White")) +   
+  theme_minimal() + ylab("Cause-Specific Infant Mortality Rate (per 1,000)") +
+  ggtitle("Trends in cause-specific infant mortality rates over time for black and whites, United States 2010-2015") +
+  scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = ""))
+```
+
+-notice that the y-axis is free (different for each plot), and the plots are organized by descreasing IMRs
+-of four causes that contributed the most to mortality (i.e., those in the top row), three saw increases in 2015 vs. 2014 for blacks but not for whites (congenital malformations, SIDS, all other causes).
+-thus, it is the relative changes in the rates of mortality for these causes that had the largest affect on increasing the IMR more for blacks. vs. whites.
+-would we want to show all panels or just a subset? 
+
+**2) Trends in the cause-specific risk ratios**
+
+```{r COD_RiskRatio, fig.width=8, fig.height=6, echo=F}
+ggplot(subset(both.cod, Year>= 2010), aes(x = Year, y = RR))  + 
+  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
+  ylab("Risk Ratio") + facet_wrap(~cod_recode2) +
+  geom_ribbon(aes(ymin = LCL_RR, ymax = UCL_RR), col = "grey", alpha = 0.5) +
+  theme_minimal() + ggtitle("Trends in the relative risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
+```
+
+**3) Trends in the cause-specific risk differences**
+
+```{r COD_RiskDifference, fig.width=9, fig.height=6, echo=F}
+ggplot(subset(both.cod, Year>= 2010), aes(x = Year, y = RD))  + 
+  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
+  ylab("Risk Difference (excess deaths per 1,000)") + facet_wrap(~cod_recode2, scales = "free_y") +
+  geom_ribbon(aes(ymin = LCL_RD, ymax = UCL_RD), col = "grey", alpha = 0.5) +
+  theme_minimal() + ggtitle("Trends in the excess risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
+```
+
+**4) Stacked bar charts for 2014 vs. 2015**
+
+```{r, fig.width=6.5, fig.height=4.5, echo=F}
+ggplot(arrange(subset(both.cod, Year >= 2014), desc(cod_recode)), aes(x = Year, y = Black_IMR, fill=cod_recode)) +
+    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
+  ggtitle("Black")
+
+ggplot(arrange(subset(both.cod, Year >= 2014), desc(cod_recode)), aes(x = Year, y = White_IMR, fill=cod_recode)) +
+    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
+  ggtitle("White")
+```
+
+-I find these somewhat hard to interpret because hard to isolate the COD-specific changes due to the stacking. 
+
+**5) Alternative: Stacked bar charts for 2010-2015 with reversed stacking order**
+
+```{r, fig.width=6, fig.height=4.5, echo=F}
+ggplot(arrange(subset(both.cod, Year >= 2010), cod_recode), aes(x = Year, y = Black_IMR, fill=cod_recode)) +
+    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
+  ggtitle("Black")
+
+ggplot(arrange(subset(both.cod, Year >= 2010), cod_recode), aes(x = Year, y = White_IMR, fill=cod_recode)) +
+    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
+  ggtitle("White")
+```
+
+Again, I find this hard to interpret.
 
 
 
 
 
+
+**Supplementary plots**
+Slightly different from those figures featured above.
+
+```{r more_plots1, echo=F}
+ggplot(both2, aes(x = Year, y = Black_IMR))  + 
+  geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
+  geom_line(aes(col = "Black"), lwd = 1.5) + 
+  geom_line(aes(y = White_IMR, col = "White"), lwd = 1.5) +
+  facet_wrap(~ Gender) + ylab("Infant Mortality Rate (per 1,000)") +
+  scale_color_manual(values = c("#b2182b", "#2166ac")) +
+  theme_minimal()
+
+ggplot(both2, aes(x = Year, y = RR))  + 
+  geom_line(lwd = 1.5) + 
+  facet_wrap(~ Gender) + ylab("Relative risk") +
+  theme_minimal()
+
+ggplot(both2, aes(x = Year, y = RD))  + 
+  geom_line(lwd = 1.5) + 
+  facet_wrap(~ Gender) +
+  ylab("Excess risk") +
+  theme_minimal()
+
+ggplot(both.cod, aes(x = Year, y = Black_IMR)) + 
+  geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
+  geom_line(aes(col = "Black")) + facet_wrap(~cod_recode2, scales = "free_y") +
+  geom_line(aes(y = White_IMR, col = "White")) +   
+  theme_minimal() + ylab("Cause-Specific Infant Mortality Rate (per 1,000)") +
+  ggtitle("Trends in cause-specific infant mortality rates over time for black and whites, United States 1999-2015") +
+  scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = ""))
+
+
+ggplot(both.cod, aes(x = Year, y = RR))  + 
+  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
+  ylab("Risk Ratio") + facet_wrap(~cod_recode2, scales = "free_y") +
+  geom_ribbon(aes(ymin = LCL_RR, ymax = UCL_RR), col = "grey", alpha = 0.5) +
+  theme_minimal() + ggtitle("Trends in the relative risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
+
+ggplot(both.cod, aes(x = Year, y = RR))  + 
+  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
+  ylab("Risk Ratio") + facet_wrap(~cod_recode2) +
+  geom_ribbon(aes(ymin = LCL_RR, ymax = UCL_RR), col = "grey", alpha = 0.5) +
+  theme_minimal() + ggtitle("Trends in the relative risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
+
+ggplot(both.cod, aes(x = Year, y = RD))  + 
+  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
+  ylab("Risk Difference (excess deaths per 1,000)") + facet_wrap(~cod_recode2, scales = "free_y") + 
+  geom_ribbon(aes(ymin = LCL_RD, ymax = UCL_RD), col = "grey", alpha = 0.5) +
+  theme_minimal() + ggtitle("Trends in the excess risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
+
+ggplot(both.cod, aes(x = Year, y = RD))  + 
+  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
+  ylab("Risk Difference (excess deaths per 1,000)") + facet_wrap(~cod_recode2) + 
+  geom_ribbon(aes(ymin = LCL_RD, ymax = UCL_RD), col = "grey", alpha = 0.5) +
+  theme_minimal() + ggtitle("Trends in the excess risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
+```
 
 ```{r more_plots, echo=F, eval=F}
 a <- ggplotly(
@@ -377,4 +413,6 @@ ggplot(imdat.subset, aes(x = Year, y = RatePer1000)) +
   ylab("Infant Mortality Rate (per 1,000)")
 
 ```
+
+
 
