@@ -258,22 +258,21 @@ white <- subset(imdat.subset, Race == "White") %>%
 
 both <- merge(black, white, by = c("Year", "Gender"))
 both <- both %>% mutate(RR = Black_IMR/White_IMR, RD = Black_IMR - White_IMR,
-                        SD_RD = (((Black.Deaths*(Black.Pop - Black.Deaths))/(Black.Pop^2*(Black.Pop-1))) + ((White.Deaths*(White.Pop - White.Deaths))/(White.Pop^2*(White.Pop-1))))^0.5,
-         UCL_RD = RD + 1.96*SD_RD, LCL_RD = RD - 1.96*SD_RD, 
+                        SD_RD = (((Black.Deaths*(Black.Pop - Black.Deaths))/(Black.Pop^3)) + 
+                                   ((White.Deaths*(White.Pop - White.Deaths))/(White.Pop^3)))^0.5,
+         UCL_RD = RD + 1.96*SD_RD*1000, LCL_RD = RD - 1.96*SD_RD*1000, 
                   SD_lnRR = ((1/Black.Deaths)-(1/(Black.Pop-Black.Deaths))+(1/White.Deaths)-(1/(White.Pop-White.Deaths)))^0.5,
          UCL_RR = exp(log(RR) + 1.96*SD_lnRR), LCL_RR = exp(log(RR) - 1.96*SD_lnRR))
 
-#formulas for the standard errors of the RR and RD from Modern Epidemiology, Third Edition, Ch.14, pg 249 by Rothman, Greenland, and Lash
-#my CIs for the RD are not equal to those produced by the epiR package
-#not sure why this is.
+#formulas for the standard errors of the RR and RD found in Baby Rothman
 aggregate.sex <- both %>% group_by(Year) %>%
   summarise(Black.Pop = sum(Black.Pop), White.Pop = sum(White.Pop),
             Black.Deaths = sum(Black.Deaths), White.Deaths = sum(White.Deaths)) %>%
   mutate(Black_IMR = (Black.Deaths/Black.Pop)*1000,
          White_IMR = (White.Deaths/White.Pop)*1000) %>%
   mutate(RR = Black_IMR/White_IMR, RD = Black_IMR - White_IMR,
-         SD_RD = (((Black.Deaths*(Black.Pop - Black.Deaths))/(Black.Pop^2*(Black.Pop-1))) + ((White.Deaths*(White.Pop - White.Deaths))/(White.Pop^2*(White.Pop-1))))^0.5,
-         UCL_RD = RD + 1.96*SD_RD, LCL_RD = RD - 1.96*SD_RD,
+         SD_RD = (((Black.Deaths*(Black.Pop - Black.Deaths))/(Black.Pop^3)) + ((White.Deaths*(White.Pop - White.Deaths))/(White.Pop^3)))^0.5,
+         UCL_RD = RD + 1.96*SD_RD*1000, LCL_RD = RD - 1.96*SD_RD*1000,
          SD_lnRR = ((1/Black.Deaths)-(1/(Black.Pop-Black.Deaths))+(1/White.Deaths)-(1/(White.Pop-White.Deaths)))^0.5,
          UCL_RR = exp(log(RR) + 1.96*SD_lnRR), LCL_RR = exp(log(RR) - 1.96*SD_lnRR),
          Gender = "Both Genders")
