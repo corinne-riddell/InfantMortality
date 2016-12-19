@@ -10,6 +10,91 @@ library(plotly)
 library(dplyr)
 ```
 
+```{r cod_data}
+im.cod.dat <-  read.csv("/Users/corinneriddell/Documents/repos/InfantMortality/Data/InfantMortality_by_COD_cleaned.csv", header = T)
+
+im.cod.dat <- im.cod.dat %>% 
+  filter(Race %in% c("Black or African American", "White"),
+         Hispanic_Origin == "Not Hispanic or Latino") %>%
+  select(Race, Year, Deaths, Population, ICD10.130.Infants, Crude_Rate) %>%
+  mutate(Race = relevel(Race, ref = "White")) %>%
+  mutate(Race = plyr::revalue(Race, c("White"="White", "Black or African American"="Black")),
+         #Group = interaction(Race, Gender, sep= " "),
+         Population = as.numeric(as.character(Population)),
+         RatePer1000 = (Deaths/Population)*1000,
+         ICD10 = as.character(ICD10.130.Infants))
+
+im.cod.dat$cod_recode <- NA
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Congenital malformations, deformations and chromosomal abnormalities (Q00-Q99)"] <- "Congenital Malformations"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Disorders related to short gestation and low birth weight, not elsewhere classified (P07)"] <- "Short Gestation/LBW"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Sudden infant death syndrome (R95)"] <- "SIDS"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Newborn affected by maternal complications of pregnancy (P01)"] <- "Maternal Complication of Pregnancy"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Accidents (unintentional injuries) (V01-X59)"] <- "Accidents"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Newborn affected by complications of placenta, cord and membranes (P02)"] <- "Complications of Placenta, Cord, and Membranes"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Respiratory distress of newborn (P22)"] <- "Respiratory Distress"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Bacterial sepsis of newborn (P36)"] <- "Bacterial Sepsis"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Diseases of the circulatory system (I00-I99)"] <- "Diseases of the Circulatory System"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Neonatal hemorrhage (P50-P52,P54)"] <- "Neonatal Hemorrhage"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Intrauterine hypoxia and birth asphyxia (P20-P21)"] <- "Intrauterine hypoxia and birth asphyxia"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Necrotizing enterocolitis of newborn (P77)"] <- "Necrotizing enterocolitis"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Atelectasis (P28.0-P28.1)"] <- "Atelectasis"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Assault (homicide) (*U01,X85-Y09)"] <- "Assault"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Septicemia (A40-A41)"] <- "Septicemia"
+table(im.cod.dat$cod_recode)
+
+im.cod.dat2 <- im.cod.dat %>% filter(is.na(cod_recode) == F) %>%
+  select(Race, Year, Deaths, Population, RatePer1000, cod_recode)
+
+total15 <- im.cod.dat2 %>% group_by(Race, Year) %>%
+  summarise(Deaths.top15 = sum(Deaths))
+  
+```
+
+15 leading causes of death by ICD code for infants
+#Congenital malformations, deformations and chromosomal abnormalities (Q00-Q99)	64,181	47,147,656	136.1
+#Disorders related to short gestation and low birth weight, not elsewhere classified (P07)	58,033	47,147,656	123.1
+#Sudden infant death syndrome (R95)	29,760	47,147,656	63.1
+#Newborn affected by maternal complications of pregnancy (P01)	20,990	47,147,656	44.5
+#Accidents (unintentional injuries) (V01-X59)	15,215	47,147,656	32.3
+#Newborn affected by complications of placenta, cord and membranes (P02)	13,411	47,147,656	28.4
+#Respiratory distress of newborn (P22)	9,638	47,147,656	20.4
+#Bacterial sepsis of newborn (P36)	8,888	47,147,656	18.9
+#Diseases of the circulatory system (I00-I99)	7,119	47,147,656	15.1
+#Neonatal hemorrhage (P50-P52,P54)	6,421	47,147,656	13.6
+#Intrauterine hypoxia and birth asphyxia (P20-P21)	5,567	47,147,656	11.8
+#Necrotizing enterocolitis of newborn (P77)	5,526	47,147,656	11.7
+#Atelectasis (P28.0-P28.1)	4,681	47,147,656	9.9
+#Assault (homicide) (*U01,X85-Y09)	4,027	47,147,656	8.5
+#Septicemia (A40-A41)
+
 ```{r setup_data, echo=F}
 im.dat <-  read.csv("/Users/corinneriddell/Documents/repos/InfantMortality/Data/InfantMortalityData.csv",
                       header = T)
@@ -25,6 +110,54 @@ imdat.subset <- im.dat %>%
          Population = as.numeric(as.character(Population)),
          RatePer1000 = (Deaths/Population)*1000)
 
+totals <- imdat.subset %>% group_by(Race, Year) %>% 
+  summarise(Deaths.all = sum(Deaths),
+            Population = sum(Population)) 
+
+totals <- merge(totals, total15, by = c("Race", "Year"))
+
+totals <- totals %>% mutate(Deaths = Deaths.all - Deaths.top15,
+                            RatePer1000 = (Deaths/Population)*1000,
+                            cod_recode = "All other causes") %>%
+                     select(Race, Year, Population, Deaths, RatePer1000, cod_recode) 
+
+im.cod.dat3 <- rbind(im.cod.dat2, totals)  
+
+im.cod.dat3$cod_recode <- factor(im.cod.dat3$cod_recode)
+im.cod.dat3$cod_recode <- reorder(im.cod.dat3$cod_recode, im.cod.dat3$RatePer1000, max)
+
+#i would want to reoder this because right not the one with the 
+#highest rates are in the bottom row
+ggplot(im.cod.dat3, aes(x = Year, y = RatePer1000)) + 
+  geom_line(aes(col = Race)) + facet_wrap(~cod_recode, scales = "free_y") +
+  theme_minimal() 
+
+black2 <- subset(im.cod.dat3, Race == "Black") %>% 
+  select(Year, RatePer1000, Population, Deaths, cod_recode) %>%
+  rename(Black_IMR = RatePer1000, Black.Pop = Population,
+         Black.Deaths = Deaths)
+
+white2 <- subset(im.cod.dat3, Race == "White") %>% 
+  select(Year, RatePer1000, Population, Deaths, cod_recode) %>%
+  rename(White_IMR = RatePer1000, White.Pop = Population,
+         White.Deaths = Deaths)
+
+both.cod <- merge(black2, white2, by = c("Year", "cod_recode"))
+both.cod <- both.cod %>% mutate(RR = Black_IMR/White_IMR, RD = Black_IMR - White_IMR)
+
+ggplot(both.cod, aes(x = Year, y = RR))  + 
+  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
+  ylab("Risk Ratio") + facet_wrap(~cod_recode) +
+  theme_minimal()
+
+
+ggplot(both.cod, aes(x = Year, y = RD))  + 
+  geom_line(lwd = 1.5) + #, aes(col = cod_recode)) + 
+  ylab("Risk Difference (excess deaths per 1,000)") + facet_wrap(~cod_recode, scales = "free_y") +
+  theme_minimal()
+```
+
+```{r}
 black <- subset(imdat.subset, Race == "Black") %>% 
   select(Year, Gender, RatePer1000, Population, Deaths) %>%
   rename(Black_IMR = RatePer1000, Black.Pop = Population,
@@ -59,11 +192,19 @@ ggplot(both2, aes(x = Year, y = Black_IMR))  +
   theme_minimal()
 ```
 
+Infant mortality for whites decreased from 5.01 deaths per 1,000 in 2014 to 4.95 deaths per 1,000 in 2015. At the same time, infant mortality among black infants increased from 11.01 to 11.23 per 1,000 over the same time period. While the absolute size of this increase among blacks may seem small (~ 0.22 additional deaths per 1,000 infants), it means that an additional 1XX black infants died of those 5XX,XXX born in 2015 (compared to the 2014 level).
+
+The risk ratio increased to 2.27 from 2.19, implying 2.27 times more infant deaths among blacks compared with whites.
+
+The risk difference, an absolute measure of risk was 6.00/1000 in 2014 and increased to 6.29/1000 in 2015. 
+Number of black infant deaths in 2015: 6907 for 614972 population
+If blacks had rates of whites in 2015: 3041 for 614972 population
+--> 6907/3041 = 2.27, 6907-3041 = 3866 additional deaths per 614972 --> X per 1000
+
 ```{r RR_plot, echo=F, fig.width=8, fig.height=2}
 ggplot(both2, aes(x = Year, y = RR))  + 
   geom_line(lwd = 1.5) + 
   facet_wrap(~ Gender) + ylab("Risk Ratio") +
-  ylab("Risk Ratio") +
   theme_minimal()
 ```
 
