@@ -201,6 +201,34 @@ Number of black infant deaths in 2015: 6907 for 614972 population
 If blacks had rates of whites in 2015: 3041 for 614972 population
 --> 6907/3041 = 2.27, 6907-3041 = 3866 additional deaths per 614972 --> X per 1000
 
+
+-Two years only
+-Stacked with largest contributions at the bottom
+
+```{r}
+ggplot(arrange(subset(both.cod, Year >= 2014), desc(cod_recode)), aes(x = Year, y = Black_IMR, fill=cod_recode)) +
+    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
+  ggtitle("Black")
+
+ggplot(arrange(subset(both.cod, Year >= 2014), desc(cod_recode)), aes(x = Year, y = White_IMR, fill=cod_recode)) +
+    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
+  ggtitle("White")
+```
+
+-Past five years
+-Stacked with largest contributions at the top
+
+```{r}
+ggplot(arrange(subset(both.cod, Year >= 2010), cod_recode), aes(x = Year, y = Black_IMR, fill=cod_recode)) +
+    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
+  ggtitle("Black")
+
+ggplot(arrange(subset(both.cod, Year >= 2010), cod_recode), aes(x = Year, y = White_IMR, fill=cod_recode)) +
+    geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
+  ggtitle("White")
+```
+
+
 ```{r RR_plot, echo=F, fig.width=8, fig.height=2}
 ggplot(both2, aes(x = Year, y = RR))  + 
   geom_line(lwd = 1.5) + 
