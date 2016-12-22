@@ -97,6 +97,13 @@ im.cod.dat2 <- im.cod.dat %>% filter(is.na(cod_recode) == F) %>%
 #and store this info in a new data frame called total14
 total14 <- im.cod.dat2 %>% group_by(Race, Year) %>%
   summarise(Deaths.top14 = sum(Deaths))
+
+total4 <- im.cod.dat2 %>% group_by(Race, Year) %>%
+  filter(cod_recode %in% c("Congenital Malformations", "SIDS", "Short Gestation/LBW", "Maternal Complication of Pregnancy")) %>%
+  summarise(Deaths.top4 = sum(Deaths))
+
+im.cod.dat_top4 <- im.cod.dat2 %>% 
+  filter(cod_recode %in% c("Congenital Malformations", "SIDS", "Short Gestation/LBW", "Maternal Complication of Pregnancy"))
   
 ```
 
@@ -145,8 +152,16 @@ totals <- imdat.subset %>% group_by(Race, Year) %>%
 #this dataset contains overall death counts ("Deaths.all") and the deaths from the top 14 causes ("Deaths.top14")
 totals <- merge(totals, total14, by = c("Race", "Year"))
 
+totals_top4 <- merge(totals, total4, by = c("Race", "Year"))
+
 #calculate the rate of deaths from all other causes
 totals <- totals %>% mutate(Deaths = Deaths.all - Deaths.top14,
+                            RatePer1000 = (Deaths/Population)*1000,
+                            cod_recode = "All other causes") %>%
+                     select(Race, Year, Population, Deaths, RatePer1000, cod_recode) 
+
+#calculate the rate of deaths from all other causes
+totals_top4 <- totals_top4 %>% mutate(Deaths = Deaths.all - Deaths.top4,
                             RatePer1000 = (Deaths/Population)*1000,
                             cod_recode = "All other causes") %>%
                      select(Race, Year, Population, Deaths, RatePer1000, cod_recode) 
@@ -155,18 +170,27 @@ totals <- totals %>% mutate(Deaths = Deaths.all - Deaths.top14,
 im.cod.dat3 <- rbind(im.cod.dat2, totals)  
 im.cod.dat3$cod_recode <- factor(im.cod.dat3$cod_recode)
 
+im.cod.dat_top4 <- rbind(im.cod.dat_top4, totals)  
+im.cod.dat_top4$cod_recode <- factor(im.cod.dat_top4$cod_recode)
+
 #order the factor variable 
 im.cod.dat3$cod_recode <- reorder(im.cod.dat3$cod_recode, im.cod.dat3$RatePer1000, max)
 im.cod.dat3$cod_recode2 <- factor(im.cod.dat3$cod_recode, levels = rev(levels(im.cod.dat3$cod_recode)))
+
+im.cod.dat_top4$cod_recode <- reorder(im.cod.dat_top4$cod_recode, im.cod.dat_top4$RatePer1000, max)
+im.cod.dat_top4$cod_recode2 <- factor(im.cod.dat_top4$cod_recode, levels = rev(levels(im.cod.dat_top4$cod_recode)))
 ```
 
 ```{r reshape_long_to_wide, echo=F}
-black2 <- subset(im.cod.dat3, Race == "Black") %>% 
+
+data.chosen <- im.cod.dat_top4
+
+black2 <- subset(data.chosen, Race == "Black") %>% 
   select(Year, RatePer1000, Population, Deaths, cod_recode, cod_recode2) %>%
   rename(Black_IMR = RatePer1000, Black.Pop = Population,
          Black.Deaths = Deaths)
 
-white2 <- subset(im.cod.dat3, Race == "White") %>% 
+white2 <- subset(data.chosen, Race == "White") %>% 
   select(Year, RatePer1000, Population, Deaths, cod_recode, cod_recode2) %>%
   rename(White_IMR = RatePer1000, White.Pop = Population,
          White.Deaths = Deaths)
@@ -218,31 +242,59 @@ both2 <- rbind(both, aggregate.sex)
 
 ```{r imr_plot, echo=F, fig.width=9, fig.height=3}
 first <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = Year, y = Black_IMR))  + 
-  geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
-  geom_line(aes(col = "Black"), lwd = 1.5) + 
-  geom_line(aes(y = White_IMR, col = "White"), lwd = 1.5) +
-  ylab("IMR (per 1,000)") + scale_y_continuous(limits = c(0, 15)) +
+  geom_segment(aes(y = 0, yend = 14.3, x=2005, xend=2005), lty =3, col = "grey37", lwd = 0.5) +
+  geom_segment(aes(y = 0, yend = 11.1, x=2012, xend=2012), lty =3, col = "grey37", lwd = 0.5) + 
+  geom_segment(aes(y = 0, yend = 11.2, x=2015, xend=2015), lty =3, col = "grey37", lwd = 0.5) +
+  #geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
+  geom_line(aes(col = "Black")) + 
+  geom_line(aes(y = White_IMR, col = "White")) +
+  ylab("IMR (per 1,000)") + 
+  scale_y_continuous(limits = c(0, 15.5), breaks = seq(from=0, to=15, by = 3), minor_breaks = seq(from=0, to=15, by = 1)) + 
+  scale_x_continuous(limits = c(2005, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
   scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = "")) +
-  theme_bw() + theme(legend.position = "top") + ggtitle("a) Infant Mortality Rates (IMR)") 
+  theme_bw() + theme(legend.position = "none") + ggtitle("a) Infant Mortality Rates (IMR)") +
+  geom_text(aes(x = 2015.7, y = 4.9), label = "White", col = "#2166ac", check_overlap = T) +
+  geom_text(aes(x = 2015.7, y = 11.2), label = "Black", col = "#b2182b", check_overlap = T) +
+  geom_text(data = subset(both2, Gender == "Both Genders" & Year %in% c(2005, 2012, 2015)), 
+            aes(x = Year, y = Black_IMR + 1, label = round(Black_IMR,1)), col = "#b2182b") +
+  geom_text(data = subset(both2, Gender == "Both Genders" & Year %in% c(2005, 2012, 2015)), 
+            aes(x = Year, y = White_IMR + 1, label = round(White_IMR,1)), col = "#2166ac")  
+
+first
 ```
 
 ```{r RR_plot, echo=F, fig.width=8, fig.height=2}
 second <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = Year, y = RR))  + 
-  geom_line(lwd = 1.5) + geom_ribbon(aes(ymin = LCL_RR, ymax = UCL_RR), col = "grey", alpha = 0.5) + 
-  ylab("Risk Ratio") + #scale_y_log10() +
+  geom_segment(aes(y = 1, yend = 2.4, x=2005, xend=2005), lty =3, col = "grey37", lwd = 0.5) +
+  geom_segment(aes(y = 1, yend = 2.2, x=2012, xend=2012), lty =3, col = "grey37", lwd = 0.5) + 
+  geom_segment(aes(y = 1, yend = 2.3, x=2015, xend=2015), lty =3, col = "grey37", lwd = 0.5) +
+  geom_line() + #geom_ribbon(aes(ymin = LCL_RR, ymax = UCL_RR), col = "grey", alpha = 0.5) + 
+  ylab("Risk Ratio") + #scale_y_continuous(trans = log, limits = c())
+  scale_x_continuous(limits = c(2005, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
+  geom_text(data = subset(both2, Gender == "Both Genders" & Year %in% c(2005, 2012, 2015)), 
+            aes(x = Year, y = RR + 0.05, label = round(RR,1))) +
+  scale_y_continuous(trans = "log10", limits = c(1, 2.5), breaks = seq(from=1, to=2.5, by = 0.5)) +
   theme_bw() + ggtitle("b) Risk ratio")
 ```
 
 ```{r RD_plot, echo=F, fig.width=8, fig.height=2}
 third <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = Year, y = RD))  + 
-  geom_line(lwd = 1.5) + geom_ribbon(aes(ymin = LCL_RD, ymax = UCL_RD), col = "grey", alpha = 0.5) +
-  ylab("Excess risk (per 1,000)") + scale_y_continuous(limits = c(0, 10)) +
-  theme_bw() + ggtitle("c) Excess risk")
+  geom_segment(aes(y = 0, yend = 8.4, x=2005, xend=2005), lty =3, col = "grey37", lwd = 0.5) +
+  geom_segment(aes(y = 0, yend = 6.0, x=2012, xend=2012), lty =3, col = "grey37", lwd = 0.5) + 
+  geom_segment(aes(y = 0, yend = 6.3, x=2015, xend=2015), lty =3, col = "grey37", lwd = 0.5) +
+  geom_line() + #geom_ribbon(aes(ymin = LCL_RD, ymax = UCL_RD), col = "grey", alpha = 0.5) +
+  ylab("Excess risk (per 1,000)") + 
+  scale_y_continuous(limits = c(0, 10), breaks = seq(from=0, to=10, by = 3), minor_breaks = seq(from=0, to=9, by = 1)) +
+  scale_x_continuous(limits = c(2005, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
+  theme_bw() + ggtitle("b) Excess risk") +
+    geom_text(data = subset(both2, Gender == "Both Genders" & Year %in% c(2005, 2012, 2015)), 
+            aes(x = Year, y = RD + 0.5, label = round(RD,1))) 
 ```
 
-**Figure 1: Infant mortality, relative risk, and excess risk of death for blacks compared with whites, United States, 2010-2015**
+**Figure 1: Infant mortality and excess risk of death for blacks compared with whites, United States, 2010-2015**
 ```{r all_three, fig.width=3.5, fig.height=7, echo=F}
-grid.arrange(first, second, third, nrow = 3, heights = c(0.5, 0.25, 0.25))
+#grid.arrange(first, second, third, nrow = 3, heights = c(0.5, 0.25, 0.25))
+grid.arrange(first, third, nrow = 2, heights = c(0.5, 0.5))
 ```
 
 (The plots for the RR and RD contain their 95% CIs.)
@@ -261,14 +313,25 @@ If blacks had rates of whites in 2015: 3041 for 614972 population
 **1) Trends in COD-specific mortality since 2010**
 
 ```{r COD_trends_IMR, echo=F, fig.width=10, fig.height=10}
-ggplot(subset(both.cod, Year >= 2010), aes(x = Year, y = Black_IMR)) + 
-  geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
-  geom_line(aes(col = "Black")) + facet_wrap(~cod_recode2, scales = "free_y") +
+a <- ggplot(subset(both.cod, Year >= 2005), aes(x = Year, y = Black_IMR)) + 
+  #geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
+  geom_segment(data = subset(both.cod, Year %in% c(2005, 2012, 2015)), aes(yend = Black_IMR, y = 0, xend = Year), lty = 3) +
+  geom_line(aes(col = "Black")) + facet_wrap(~cod_recode2) +
   geom_line(aes(y = White_IMR, col = "White")) +   
-  theme_minimal() + ylab("Cause-Specific Infant Mortality Rate (per 1,000)") +
+  theme_bw() + ylab("Cause-Specific Infant Mortality Rate (per 1,000)") +
   ggtitle("Trends in cause-specific infant mortality rates over time for black and whites, United States 2010-2015") +
-  scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = ""))
+  scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = "")) +
+  scale_y_continuous(limits = c(0, 4.5), breaks = seq(from=0, to=4, by = 1), minor_breaks = seq(from=0, to=4, by = 0.5)) +
+  scale_x_continuous(limits = c(2005, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
+  geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015)), 
+            aes(x = Year, y = Black_IMR + 0.2, label = round(Black_IMR,1)), col = "#b2182b") +
+  geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015)), 
+            aes(x = Year, y = White_IMR - 0.3, label = round(White_IMR,1)), col = "#2166ac")  
+
+a
 ```
+
+
 
 -notice that the y-axis is free (different for each plot), and the plots are organized by descreasing IMRs
 -of four causes that contributed the most to mortality (i.e., those in the top row), three saw increases in 2015 vs. 2014 for blacks but not for whites (congenital malformations, SIDS, all other causes).
