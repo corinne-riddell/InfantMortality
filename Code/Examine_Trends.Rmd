@@ -1,9 +1,35 @@
 ---
-title: "Infant Mortality"
-author: "Corinne Riddell"
-date: "December 16, 2016"
+title: "Is the difference between infant mortality rates in blacks and whites still improving? A look back at the past ten years"
 output: html_document
 ---
+
+Corinne A Riddell, PhD
+
+Sam Harper, PhD
+
+Jay S Kaufman, PhD
+
+Department of Epidemiology, Biostatistics and Occupational Health, McGill University, Montreal, Canada.
+
+Address correspondence to: Corinne Riddell, PhD, Department of Epidemiology, Biostatistics &
+Occupational Health, McGill University, 1020 Pine Avenue West, Room 36B, Montreal, QC H3A 1A2, Canada. Email: corinne.riddell@mail.mcgill.ca
+
+Current word count (text only, exclusive of title, references, and tables): XXX
+Date of last revision: Dec XX, 2016
+
+**Introduction**
+
+Infant mortality decreased by 16% for infants born to non-Hispanic black women between 2005 and 2011 and 12% for infants born to non-Hispanic white women over the same time period.^1^ During this time, mortality declined for each of the top four causes of death.^1^ Understanding whether infant mortality has continued to decline since 2011, and whether the difference between blacks and whites continued to narrow will provide an important gauge of the United States' progress towards reducing racial inequality.
+
+**Methods**
+
+We abstracted data on deaths and population among infants (< 1 years old) from the US National Vital Statistics System by cause of death and race for 2005-2015. We limited our analysis to non-hispanic black and white infants.^2^ The overall rate of infant mortality was calculated as the number of deaths divided by the population size, according to race, year and cause of death. We calculate these rates for the top four causes of infant death and for a residual category encapsulating all other causes. The excess risk of infant mortality in blacks was calculated as the absolute difference between the rates in blacks and whites. We do not include confidence intervals, as these rates are not subject to sampling error. R version 3.2.4 was used to conduct this analysis. No ethical review was required since this study used de-identified data.
+
+**Results**
+
+From 2005 to 2012, the infant mortality rate for non-hispanic blacks decreased from 14.3 to 11.1 per 1,000 infants (**Figure 1**). Thereafter, the infant mortality rate in blacks plateaued, with two of the past three years seeing slight increases to the rate of infant mortality. For non-hispanic whites, the infant mortality rate decreased from 5.9 to 4.9 per 1,000 infants from 2005 to 2015 and experienced no years of increasing rates. Because the black infant mortality rate declined faster than the white rate, the excess risk in blacks fell from 8.4 excess deaths per 1,000 infants in 2005 to 6.0 excess deaths per 1,000 in 2012. Thereafter, excess risk rose slightly to 6.3 in 2015. 
+
+An excess risk of 6.3 deaths per 1,000 infants implies nearly 4,000 excess infant deaths among blacks compared to the amount of deaths that would have occurred had they experienced the mortality rate among whites. To arrive at this number, the black infant mortality rate that occurred can be calculated as 6907/614972, the number of deaths and population size among black infants in 2015. To calculate excess deaths, we then apply the rate of mortality among white infants (4.9 per 1,000) to the black population, and see that 3041 black infants would have died rather than 6907 -- an excess of 3866 infant deaths. If the rate of death was held at its 2014 level (6698 deaths to 608099 infants), 133 fewer black infant deaths would have occurred.
 
 ```{r, echo=F, warning=F, message=F}
 library(ggplot2)
@@ -37,7 +63,7 @@ im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants ==
 #im.cod.dat[im.cod.dat$cod_recode == "Congenital Malformations" & is.na(im.cod.dat$cod_recode) == F, ]
 
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == 
-                        "#Disorders related to short gestation and low birth weight, not elsewhere classified (P07)"] <- "Short Gestation/LBW"
+                        "#Disorders related to short gestation and low birth weight, not elsewhere classified (P07)"] <- "Short Gestation/Low Birthweight"
 #table(im.cod.dat$cod_recode)
 #im.cod.dat[im.cod.dat$cod_recode == "Short Gestation/LBW" & is.na(im.cod.dat$cod_recode) == F, ]
 
@@ -45,7 +71,7 @@ im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Sudden infant death synd
 #table(im.cod.dat$cod_recode)
 #im.cod.dat[im.cod.dat$cod_recode == "SIDS" & is.na(im.cod.dat$cod_recode) == F, ]
 
-im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Newborn affected by maternal complications of pregnancy (P01)"] <- "Maternal Complication of Pregnancy"
+im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == "#Newborn affected by maternal complications of pregnancy (P01)"] <- "Maternal Complications"
 #table(im.cod.dat$cod_recode)
 #im.cod.dat[im.cod.dat$cod_recode == "Maternal Complication of Pregnancy" & is.na(im.cod.dat$cod_recode) == F, ]
 
@@ -99,11 +125,11 @@ total14 <- im.cod.dat2 %>% group_by(Race, Year) %>%
   summarise(Deaths.top14 = sum(Deaths))
 
 total4 <- im.cod.dat2 %>% group_by(Race, Year) %>%
-  filter(cod_recode %in% c("Congenital Malformations", "SIDS", "Short Gestation/LBW", "Maternal Complication of Pregnancy")) %>%
+  filter(cod_recode %in% c("Congenital Malformations", "SIDS", "Short Gestation/Low Birthweight", "Maternal Complications")) %>%
   summarise(Deaths.top4 = sum(Deaths))
 
 im.cod.dat_top4 <- im.cod.dat2 %>% 
-  filter(cod_recode %in% c("Congenital Malformations", "SIDS", "Short Gestation/LBW", "Maternal Complication of Pregnancy"))
+  filter(cod_recode %in% c("Congenital Malformations", "SIDS", "Short Gestation/Low Birthweight", "Maternal Complications"))
   
 ```
 
@@ -170,7 +196,7 @@ totals_top4 <- totals_top4 %>% mutate(Deaths = Deaths.all - Deaths.top4,
 im.cod.dat3 <- rbind(im.cod.dat2, totals)  
 im.cod.dat3$cod_recode <- factor(im.cod.dat3$cod_recode)
 
-im.cod.dat_top4 <- rbind(im.cod.dat_top4, totals)  
+im.cod.dat_top4 <- rbind(im.cod.dat_top4, totals_top4)  
 im.cod.dat_top4$cod_recode <- factor(im.cod.dat_top4$cod_recode)
 
 #order the factor variable 
@@ -248,11 +274,11 @@ first <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = 
   #geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
   geom_line(aes(col = "Black")) + 
   geom_line(aes(y = White_IMR, col = "White")) +
-  ylab("IMR (per 1,000)") + 
+  ylab("Rate per 1,000 infants") + 
   scale_y_continuous(limits = c(0, 15.5), breaks = seq(from=0, to=15, by = 3), minor_breaks = seq(from=0, to=15, by = 1)) + 
   scale_x_continuous(limits = c(2005, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
   scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = "")) +
-  theme_bw() + theme(legend.position = "none") + ggtitle("a) Infant Mortality Rates (IMR)") +
+  theme_bw() + theme(legend.position = "none") + ggtitle("a) Infant Mortality Rate") +
   geom_text(aes(x = 2015.7, y = 4.9), label = "White", col = "#2166ac", check_overlap = T) +
   geom_text(aes(x = 2015.7, y = 11.2), label = "Black", col = "#b2182b", check_overlap = T) +
   geom_text(data = subset(both2, Gender == "Both Genders" & Year %in% c(2005, 2012, 2015)), 
@@ -260,7 +286,6 @@ first <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = 
   geom_text(data = subset(both2, Gender == "Both Genders" & Year %in% c(2005, 2012, 2015)), 
             aes(x = Year, y = White_IMR + 1, label = round(White_IMR,1)), col = "#2166ac")  
 
-first
 ```
 
 ```{r RR_plot, echo=F, fig.width=8, fig.height=2}
@@ -283,7 +308,7 @@ third <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = 
   geom_segment(aes(y = 0, yend = 6.0, x=2012, xend=2012), lty =3, col = "grey37", lwd = 0.5) + 
   geom_segment(aes(y = 0, yend = 6.3, x=2015, xend=2015), lty =3, col = "grey37", lwd = 0.5) +
   geom_line() + #geom_ribbon(aes(ymin = LCL_RD, ymax = UCL_RD), col = "grey", alpha = 0.5) +
-  ylab("Excess risk (per 1,000)") + 
+  ylab("Excess risk per 1,000 infants") + 
   scale_y_continuous(limits = c(0, 10), breaks = seq(from=0, to=10, by = 3), minor_breaks = seq(from=0, to=9, by = 1)) +
   scale_x_continuous(limits = c(2005, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
   theme_bw() + ggtitle("b) Excess risk") +
@@ -291,54 +316,108 @@ third <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = 
             aes(x = Year, y = RD + 0.5, label = round(RD,1))) 
 ```
 
-**Figure 1: Infant mortality and excess risk of death for blacks compared with whites, United States, 2010-2015**
-```{r all_three, fig.width=3.5, fig.height=7, echo=F}
+**Figure 1: Infant mortality and excess risk of death for blacks compared with whites, United States, 2005-2015**
+```{r all_three, fig.width=7, fig.height=3.5, echo=F}
 #grid.arrange(first, second, third, nrow = 3, heights = c(0.5, 0.25, 0.25))
-grid.arrange(first, third, nrow = 2, heights = c(0.5, 0.5))
+grid.arrange(first, third, ncol = 2)
 ```
 
-(The plots for the RR and RD contain their 95% CIs.)
+*COD-specific (Figure 2 findings -- to write up properly)*
 
-Infant mortality for whites decreased from 5.01 deaths per 1,000 in 2014 to 4.95 deaths per 1,000 in 2015. At the same time, infant mortality among black infants increased from 11.01 to 11.23 per 1,000 over the same time period. While the absolute size of this increase among blacks may seem small (~ 0.22 additional deaths per 1,000 infants), it means that an additional 1XX black infants died of those 5XX,XXX born in 2015 (compared to the 2014 level).
+-the most frequent cause of infant death among blacks is short gest/LBW, which is also the causes with the largest absolute and relative difference between blacks and whites.
+-from 2005 to 2011, sustained progress in reducing deaths related to short gestation/LBW among blacks, working towards narrowing the gap. Plateauing in recent years. 
 
-The risk ratio increased to 2.27 from 2.19, implying 2.27 times more infant deaths among blacks compared with whites.
+-The next most frequent cause of death among blacks is congenital malformations, which also underwent progress towards lowering deaths related to congential malformations between 2005 and 2012, followed by a plateau
 
-The risk difference, an absolute measure of risk was 6.00/1000 in 2014 and increased to 6.29/1000 in 2015. 
-Number of black infant deaths in 2015: 6907 for 614972 population
-If blacks had rates of whites in 2015: 3041 for 614972 population
---> 6907/3041 = 2.27, 6907-3041 = 3866 additional deaths per 614972 --> X per 1000
+-Rates of deaths related to SIDS and maternal complications are the remaining two top causes of infant death in blacks and again exhibit a pattern of early decreases followed by a plateau period.
 
-**Exploration of COD plots**
+-Infant deaths from all other causes capture all remaining deaths and again show this pattern on early declines followed by plateau and slight increase.
 
-**1) Trends in COD-specific mortality since 2010**
+**Figure 2: Trends in COD-specific mortality for the top four causes of infant death, United States, 2005-2015**
 
-```{r COD_trends_IMR, echo=F, fig.width=10, fig.height=10}
-a <- ggplot(subset(both.cod, Year >= 2005), aes(x = Year, y = Black_IMR)) + 
+```{r COD_trends_IMR, echo=F, fig.width=7, fig.height=7, warning=F}
+a <- ggplot(subset(both.cod, Year >= 2005 & cod_recode!= "All other causes"), aes(x = Year, y = Black_IMR*100)) + 
   #geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
-  geom_segment(data = subset(both.cod, Year %in% c(2005, 2012, 2015)), aes(yend = Black_IMR, y = 0, xend = Year), lty = 3) +
+  geom_segment(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode!= "All other causes"), aes(yend = Black_IMR*100, y = 0, xend = Year), lty = 3) +
   geom_line(aes(col = "Black")) + facet_wrap(~cod_recode2) +
-  geom_line(aes(y = White_IMR, col = "White")) +   
-  theme_bw() + ylab("Cause-Specific Infant Mortality Rate (per 1,000)") +
-  ggtitle("Trends in cause-specific infant mortality rates over time for black and whites, United States 2010-2015") +
+  geom_line(aes(y = White_IMR*100, col = "White")) +   
+  theme_bw() + ylab("Rate (per 100,000)") + theme(legend.position = "top") +
   scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = "")) +
-  scale_y_continuous(limits = c(0, 4.5), breaks = seq(from=0, to=4, by = 1), minor_breaks = seq(from=0, to=4, by = 0.5)) +
-  scale_x_continuous(limits = c(2005, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
-  geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015)), 
-            aes(x = Year, y = Black_IMR + 0.2, label = round(Black_IMR,1)), col = "#b2182b") +
-  geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015)), 
-            aes(x = Year, y = White_IMR - 0.3, label = round(White_IMR,1)), col = "#2166ac")  
-
+  scale_y_continuous(limits = c(-10, 4*100), breaks = seq(from=0, to=4*100, by = 1*100), minor_breaks = seq(from=0, to=4*100, by = 0.5*100)) +
+  scale_x_continuous(limits = c(2004, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
+  geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode!= "All other causes"), 
+            aes(x = Year, y = (Black_IMR + 0.3)*100, label = round(Black_IMR*100,1)), col = "#b2182b") +
+  geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode!= "All other causes"), 
+            aes(x = Year, y = (White_IMR - 0.3)*100, label = round(White_IMR*100,1)), col = "#2166ac")  
 a
 ```
 
+```{r COD_trends_IMR_other, echo=F, fig.width=3.75, fig.height=3.5, warning=F}
+b <- ggplot(subset(both.cod, Year >= 2005 & cod_recode== "All other causes"), aes(x = Year, y = Black_IMR*100)) + 
+  #geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
+  geom_segment(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode== "All other causes"), aes(yend = Black_IMR*100, y = 0, xend = Year), lty = 3) +
+  geom_line(aes(col = "Black")) + facet_wrap(~cod_recode2) +
+  geom_line(aes(y = White_IMR*100, col = "White")) +   
+  theme_bw() + ylab("Rate (per 100,000)") +
+  scale_color_manual(values = c("#b2182b", "#2166ac"), guide = FALSE) +
+  scale_y_continuous(limits = c(-10, 8*100), breaks = seq(from=0, to=8*100, by = 1*100), minor_breaks = seq(from=0, to=8*100, by = 0.5*100)) +
+  scale_x_continuous(limits = c(2004, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
+  geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode== "All other causes"), 
+            aes(x = Year, y = (Black_IMR + 0.3)*100, label = round(Black_IMR*100,1)), col = "#b2182b") +
+  geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode== "All other causes"), 
+            aes(x = Year, y = (White_IMR - 0.3)*100, label = round(White_IMR*100,1)), col = "#2166ac")  
+b
+```
+
+**Comment**
+
+**Author Contributions**
+
+Dr. Riddell had full access to all of the data and takes responsibility for the integrity of the data and the accuracy of the analysis. A replication data set including the raw data and statistical code to reproduce the paper results is publicly available on github: https://github.com/corinne-riddell/InfantMortality/.
+
+Study concept and design: Riddell, Harper, Kaufman
+
+Acquisition of data: Riddell 
+
+Analysis and interpretation of data: Riddell, Harper, Kaufman 
+
+Drafting of the manuscript: Riddell, Harper, Kaufman
+
+Critical revision of the manuscript for important intellectual content: Riddell, Harper, Kaufman
+
+Statistical analysis: Riddell 
+
+Obtained funding: No funding obtained 
+
+Administrative, technical, or material support: None 
+
+Study supervision: Riddell, Harper, Kaufman
+
+Acknowledgements: Corinne Riddell is a post-doctoral researcher at McGill University. Sam Harper was supported by a Chercheur Boursier Junior 1 from the Fonds de la Recherche en Santé du Québec. Jay Kaufman was supported by a Canada Research Chair in Health Disparities. The sources of support had no control over the design and conduct of the study; collection, management, analysis, and interpretation of the data; and preparation, review, or approval of the manuscript. 
 
 
--notice that the y-axis is free (different for each plot), and the plots are organized by descreasing IMRs
--of four causes that contributed the most to mortality (i.e., those in the top row), three saw increases in 2015 vs. 2014 for blacks but not for whites (congenital malformations, SIDS, all other causes).
--thus, it is the relative changes in the rates of mortality for these causes that had the largest affect on increasing the IMR more for blacks. vs. whites.
--would we want to show all panels or just a subset? 
+**References**
 
-**2) Trends in the cause-specific risk ratios**
+1. [ref NCHS data brief # 120]. https://www.cdc.gov/nchs/data/databriefs/db120.pdf
+
+2. Centers for Disease Control and Prevention, National Center for Health Statistics. Underlying cause of death 1999-2015 on CDC WONDER online database, released December, 2016. Data are from the Multiple Cause of Death Files, 1999-2015, as compiled from data provided by the 57 vital statistics jurisdictions through the Vital Statistics Cooperative Program; December 2016. Available from: https://wonder.cdc.gov/ [cited 22 Dec 2016]. 
+
+**Figure Legends**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**OLD**
 
 ```{r COD_RiskRatio, fig.width=8, fig.height=6, echo=F}
 ggplot(subset(both.cod, Year>= 2010), aes(x = Year, y = RR))  + 
@@ -347,6 +426,7 @@ ggplot(subset(both.cod, Year>= 2010), aes(x = Year, y = RR))  +
   geom_ribbon(aes(ymin = LCL_RR, ymax = UCL_RR), col = "grey", alpha = 0.5) +
   theme_minimal() + ggtitle("Trends in the relative risk of cause-specific infant mortality over time comparing blacks to whites, United States 1999-2015")
 ```
+
 
 **3) Trends in the cause-specific risk differences**
 
@@ -383,13 +463,6 @@ ggplot(arrange(subset(both.cod, Year >= 2010), cod_recode), aes(x = Year, y = Wh
     geom_bar(stat='identity', col = "white") + theme_minimal() + ylab("Infant mortality rate (per 1000)") +
   ggtitle("White")
 ```
-
-Again, I find this hard to interpret.
-
-
-
-
-
 
 **Supplementary plots**
 Slightly different from those figures featured above.
@@ -477,5 +550,14 @@ ggplot(imdat.subset, aes(x = Year, y = RatePer1000)) +
 
 ```
 
+(The plots for the RR and RD contain their 95% CIs.)
 
+Infant mortality for whites decreased from 5.01 deaths per 1,000 in 2014 to 4.95 deaths per 1,000 in 2015. At the same time, infant mortality among black infants increased from 11.01 to 11.23 per 1,000 over the same time period. While the absolute size of this increase among blacks may seem small (~ 0.22 additional deaths per 1,000 infants), it means that an additional 1XX black infants died of those 5XX,XXX born in 2015 (compared to the 2014 level).
+
+The risk ratio increased to 2.27 from 2.19, implying 2.27 times more infant deaths among blacks compared with whites.
+
+The risk difference, an absolute measure of risk was 6.00/1000 in 2014 and increased to 6.29/1000 in 2015. 
+Number of black infant deaths in 2015: 6907 for 614972 population
+If blacks had rates of whites in 2015: 3041 for 614972 population
+--> 6907/3041 = 2.27, 6907-3041 = 3866 additional deaths per 614972 --> X per 1000
 
