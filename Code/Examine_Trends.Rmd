@@ -217,27 +217,27 @@ both2 <- rbind(both, aggregate.sex)
 ```
 
 ```{r imr_plot, echo=F, fig.width=9, fig.height=3}
-first <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2010), aes(x = Year, y = Black_IMR))  + 
+first <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = Year, y = Black_IMR))  + 
   geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
   geom_line(aes(col = "Black"), lwd = 1.5) + 
   geom_line(aes(y = White_IMR, col = "White"), lwd = 1.5) +
-  ylab("IMR (per 1,000)") +
+  ylab("IMR (per 1,000)") + scale_y_continuous(limits = c(0, 15)) +
   scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = "")) +
-  theme_minimal() + theme(legend.position = "top") + ggtitle("a) Infant Mortality Rates (IMR)")
+  theme_bw() + theme(legend.position = "top") + ggtitle("a) Infant Mortality Rates (IMR)") 
 ```
 
 ```{r RR_plot, echo=F, fig.width=8, fig.height=2}
-second <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2010), aes(x = Year, y = RR))  + 
+second <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = Year, y = RR))  + 
   geom_line(lwd = 1.5) + geom_ribbon(aes(ymin = LCL_RR, ymax = UCL_RR), col = "grey", alpha = 0.5) + 
-  ylab("Risk Ratio") +
-  theme_minimal() + ggtitle("b) Relative risk")
+  ylab("Risk Ratio") + #scale_y_log10() +
+  theme_bw() + ggtitle("b) Risk ratio")
 ```
 
 ```{r RD_plot, echo=F, fig.width=8, fig.height=2}
-third <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2010), aes(x = Year, y = RD))  + 
+third <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = Year, y = RD))  + 
   geom_line(lwd = 1.5) + geom_ribbon(aes(ymin = LCL_RD, ymax = UCL_RD), col = "grey", alpha = 0.5) +
-  ylab("Excess risk (per 1,000)") +
-  theme_minimal() + ggtitle("c) Excess risk")
+  ylab("Excess risk (per 1,000)") + scale_y_continuous(limits = c(0, 10)) +
+  theme_bw() + ggtitle("c) Excess risk")
 ```
 
 **Figure 1: Infant mortality, relative risk, and excess risk of death for blacks compared with whites, United States, 2010-2015**
