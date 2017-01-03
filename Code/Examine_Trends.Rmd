@@ -1,5 +1,5 @@
 ---
-title: Has the difference between infant mortality rates in blacks and whites continued to narrow? A look back at the past ten years.
+title: Understanding the recent increase in black infant mortality in the US
 output: word_document
 ---
 
@@ -19,21 +19,11 @@ Date of last revision: Dec XX, 2016
 
 **Introduction**
 
-Infant mortality decreased by 16% for infants born to non-Hispanic black women between 2005 and 2011 and 12% for infants born to non-Hispanic white women over the same time period.^1^ During this time, mortality declined for each of the top four causes of death.^1^ Understanding whether infant mortality has continued to decline since 2011, and whether the difference between blacks and whites continued to narrow will provide an important gauge of the United States' progress towards reducing racial inequality.
-
-*Alternatively, I could say something like: 2015 was the first year to see a decrease in life expectancy since 1993. However, we noticed that infant mortality -- which makes an important contribution to overall life expectancy -- had gone up for blacks while decreasing for whites between 2014 and 2015. In this research letter, we consider the last ten years of infant mortality data, to explore how much progress has been made to narrowing the difference in infant mortality between blacks and whites.*
+2015 witnessed the first annual decrease in life expectancy in the US since 1993.^1^ While life expectancy decreased for both whites and blacks, black men fared the worst, losing nearly twice as many years of life expectancy as white men.^2^ It was also observed that the infant mortality rate increased for blacks while decreasing for whites between 2014 and 2015. The objective of this letter is to investigate the trends in infant mortality for blacks and whites over the past ten years in the US, and report if any specific causes of death are associated with the recent increase in infant mortality among blacks. 
 
 **Methods**
 
-We abstracted data on deaths and population among infants from the US National Vital Statistics System by cause of death and race for 2005-2015. We limited our analysis to non-hispanic black and white infants.^2^ The overall rate of infant mortality was calculated as the number of deaths divided by the population size, according to race, year, and cause of death. We calculate these rates for the top four causes of infant death and for a residual category encapsulating all other causes. The excess risk of infant mortality among blacks was calculated as the absolute difference between the rates in blacks and whites. We do not include confidence intervals, as these rates are not subject to sampling error. R version 3.2.4 was used to conduct this analysis. No ethical review was required since this study used de-identified data.
-
-**Results**
-
-From 2005 to 2012, the infant mortality rate for non-hispanic blacks decreased from 14.3 to 11.1 per 1,000 infants (**Figure 1a**). Thereafter, the infant mortality rate in blacks plateaued, with two of the past three years seeing slight increases to the rate of infant mortality. For non-hispanic whites, the infant mortality rate decreased from 5.9 to 4.9 per 1,000 infants from 2005 to 2015 and experienced no years of increasing rates. Because the black infant mortality rate declined faster than the white rate, the excess risk in blacks fell from 8.4 excess deaths per 1,000 infants in 2005 to 6.0 excess deaths per 1,000 in 2012 (**Figure 1b**). Thereafter, excess risk rose slightly to 6.3 in 2015. 
-
-An excess risk of 6.3 deaths per 1,000 infants implies nearly 4,000 excess infant deaths among blacks compared to the amount of deaths that would have occurred had they experienced the mortality rate among whites. To arrive at this number, the black infant mortality rate that occurred was 6907/614972, the number of deaths and population size among black infants in 2015. To calculate excess deaths, we then apply the rate of mortality among white infants (4.9 per 1,000) to the black population, and see that 3041 black infants would have died rather than 6907 -- an excess of 3866 deaths. 
-
-If the rate of death was held at its 2014 level (6698 deaths to 608099 infants), 133 fewer black infant deaths would have occurred.
+We abstracted data on deaths and population for non-Hispanic black and white infants from the US National Vital Statistics System by cause of death for 2005-2015.^3^ The infant mortality rate was calculated as the number of deaths divided by the population size, according to race, year, and cause of death. We calculated rates for the top four causes of infant death and for a residual category encapsulating all other causes. The excess event rates among blacks was calculated as the absolute difference between the rates. We do not include confidence intervals because these rates are not subject to sampling error. R version 3.2.4 was used to conduct this analysis. No ethical review was required since this study used de-identified data. 
 
 ```{r, echo=F, warning=F, message=F}
 library(ggplot2)
@@ -270,6 +260,10 @@ aggregate.sex <- both %>% group_by(Year) %>%
 both2 <- rbind(both, aggregate.sex)
 ```
 
+**Results**
+
+From 2005 to 2012, the infant mortality rate for Non-Hispanic blacks decreased from `r round(both2$Black_IMR[both2$Year == 2005 & both2$Gender == "Both Genders"], 1)` to `r round(both2$Black_IMR[both2$Year == 2012 & both2$Gender == "Both Genders"], 1)` per 1,000 infants (**Figure 1a**). Thereafter, the infant mortality rate in blacks plateaued, and increases from `r round(both2$Black_IMR[both2$Year == 2014 & both2$Gender == "Both Genders"], 1)` to `r round(both2$Black_IMR[both2$Year == 2015 & both2$Gender == "Both Genders"], 1)` per 1,000 from 2014 to 2015. For Non-Hispanic whites, the rate decreased monotonically from `r round(both2$White_IMR[both2$Year == 2005 & both2$Gender == "Both Genders"], 1)` to `r round(both2$White_IMR[both2$Year == 2015 & both2$Gender == "Both Genders"], 1)` per 1,000 from 2005 to 2015. Because the black infant mortality rate declined faster than the white rate, excess events in blacks fell from `r round(both2$RD[both2$Year == 2005 & both2$Gender == "Both Genders"], 1)` deaths per 1,000 infants in 2005 to `r round(both2$RD[both2$Year == 2012 & both2$Gender == "Both Genders"], 1)` deaths per 1,000 in 2012 (**Figure 1b**), but rose to `r round(both2$RD[both2$Year == 2015 & both2$Gender == "Both Genders"], 1)` in 2015. These excess events imply nearly `r round(both2$Black.Deaths[both2$Year == 2015 & both2$Gender == "Both Genders"] - (both2$White_IMR[both2$Year == 2015 & both2$Gender == "Both Genders"]/1000*both2$Black.Pop[both2$Year == 2015 & both2$Gender == "Both Genders"]), -3)` additional infant deaths among the `r both2$Black.Pop[both2$Year == 2015 & both2$Gender == "Both Genders"]` blacks infants compared to the number of deaths that would have occurred had they experienced the mortality rate among whites.
+
 ```{r imr_plot, echo=F, fig.width=9, fig.height=3}
 first <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = Year, y = Black_IMR))  + 
   geom_segment(aes(y = 0, yend = 14.3, x=2005, xend=2005), lty =3, col = "grey37", lwd = 0.5) +
@@ -312,31 +306,31 @@ third <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = 
   geom_segment(aes(y = 0, yend = 6.0, x=2012, xend=2012), lty =3, col = "grey37", lwd = 0.5) + 
   geom_segment(aes(y = 0, yend = 6.3, x=2015, xend=2015), lty =3, col = "grey37", lwd = 0.5) +
   geom_line() + #geom_ribbon(aes(ymin = LCL_RD, ymax = UCL_RD), col = "grey", alpha = 0.5) +
-  ylab("Excess risk per 1,000 infants") + 
+  ylab("Excess events per 1,000 infants") + 
   scale_y_continuous(limits = c(0, 10), breaks = seq(from=0, to=10, by = 3), minor_breaks = seq(from=0, to=9, by = 1)) +
   scale_x_continuous(limits = c(2005, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
-  theme_bw() + ggtitle("b) Excess risk") +
+  theme_bw() + ggtitle("b) Excess events") +
     geom_text(data = subset(both2, Gender == "Both Genders" & Year %in% c(2005, 2012, 2015)), 
             aes(x = Year, y = RD + 0.5, label = round(RD,1))) 
 ```
 
-**Figure 2** shows trends in cause-specific mortality for the four leading causes of infant death and all other causes. Black infants have a much higher rate of deaths attributed to short gestation/low birthweight. Between 2005 and 2011, these deaths decreased for blacks, but have plateaued in recent years. The absolute differences between blacks and whites in the rates of the other leading causes are smaller than for short gestation/low birthweight. For these causes, rates among blacks and whites decreased between 2005 and 2015, although deaths related to both SIDS and congenital malformations increased for blacks last year. There is a large difference in deaths due to all remaining causes between blacks and whites. Between 2005 and 2011, there was sustained progress towards reducing mortality among blacks, but this progress has stalled in recent years, and last year also saw an increases in deaths from all causes for blacks.
+**Figure 2** shows trends in cause-specific mortality for the four leading causes of infant death and all other causes. Between 2005 and 2011, deaths from short gestation and low birthweight decreased for blacks, but have plateaued in recent years. For other leading causes, rates among blacks and whites decreased between 2005 and 2015, although deaths related to both Sudden Infant Death Syndrome (SIDS) and congenital malformations increased for blacks last year. Progress has stalled with respect to all other causes of infant death in recent years, and last year also saw an increase for blacks, but not for whites.
 
 **Comment**
 
-There was sustained progress towards reducing the excess risk of infant mortality in blacks compared with whites between 2005 and 2011, followed by a period of little to no reduction in black infant mortality. In those years, there was no progress towards reducing the excess of deaths in blacks related to short gestation/low birthweight, congenital malformations, and all other causes (not including SIDS and deaths related to maternal complications of pregnancy and delivery).
+The sustained progress in reducing infant mortality among blacks since 2005 stalled in the past few years, leading to increases in the absolute inequality in infant mortality between blacks and whites in two of the past three years. No single cause appears solely responsible for the recent increase in black infant mortality. The preterm birth rate is 48% higher for blacks compared with whites,^4^ and black infants experience three times as many deaths related to short gestation/low birthweight, making it the leading cause of infant death among blacks. Therefore, interventions to further reduce the rate of preterm birth among blacks appear the most promising option for reducing black infant mortality, and the absolute inequality between black and white infants. 
 
-To construct infant mortality rates, our analysis used data on the population of infants in each year as opposed to linked birth/infant death files which were unavailable for 2014 and 2015.
+To confirm our findings, linked birth/death files should be used once they become available for the most recent years.
 
-**Figure 1: Infant mortality and excess risk of death for blacks compared with whites, United States, 2005-2015**
+**Figure 1: Infant mortality and excess risk of death for non-Hispanic blacks compared with whites, United States, 2005-2015**
 ```{r all_three, fig.width=7, fig.height=3.5, echo=F}
 #grid.arrange(first, second, third, nrow = 3, heights = c(0.5, 0.25, 0.25))
 grid.arrange(first, third, ncol = 2)
 ```
 
-**Figure 2: Trends in COD-specific mortality for the top four causes of infant death, United States, 2005-2015**
+**Figure 2: Trends in COD-specific mortality for the top four causes of infant death and all other causes combined for non-Hispanic blacks and whites, United States, 2005-2015**
 
-```{r COD_trends_IMR, echo=F, fig.width=7, fig.height=7, warning=F}
+```{r COD_trends_IMR, echo=F, warning=F}
 a <- ggplot(subset(both.cod, Year >= 2005 & cod_recode!= "All other causes"), aes(x = Year, y = Black_IMR*100)) + 
   #geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
   geom_segment(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode!= "All other causes"), aes(yend = Black_IMR*100, y = 0, xend = Year), lty = 3) +
@@ -349,11 +343,10 @@ a <- ggplot(subset(both.cod, Year >= 2005 & cod_recode!= "All other causes"), ae
   geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode!= "All other causes"), 
             aes(x = Year, y = (Black_IMR + 0.3)*100, label = round(Black_IMR*100,1)), col = "#b2182b") +
   geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode!= "All other causes"), 
-            aes(x = Year, y = (White_IMR - 0.3)*100, label = round(White_IMR*100,1)), col = "#2166ac")  
-a
+            aes(x = Year, y = (White_IMR - 0.3)*100, label = round(White_IMR*100,1)), col = "#2166ac") 
 ```
 
-```{r COD_trends_IMR_other, echo=F, fig.width=3.75, fig.height=3.5, warning=F}
+```{r COD_trends_IMR_other, echo=F, fig.width=5.5, fig.height=8.25, warning=F}
 b <- ggplot(subset(both.cod, Year >= 2005 & cod_recode== "All other causes"), aes(x = Year, y = Black_IMR*100)) + 
   #geom_ribbon(aes(ymin= Black_IMR, ymax = White_IMR), col = "grey", alpha=0.2) +
   geom_segment(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode== "All other causes"), aes(yend = Black_IMR*100, y = 0, xend = Year), lty = 3) +
@@ -367,8 +360,12 @@ b <- ggplot(subset(both.cod, Year >= 2005 & cod_recode== "All other causes"), ae
             aes(x = Year, y = (Black_IMR + 0.3)*100, label = round(Black_IMR*100,1)), col = "#b2182b") +
   geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode== "All other causes"), 
             aes(x = Year, y = (White_IMR - 0.3)*100, label = round(White_IMR*100,1)), col = "#2166ac")  
-b
+
+blank <- grid.rect(gp=gpar(col="white"))
+grid.arrange(a, b, blank, layout_matrix = rbind(c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), c(2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3)), heights = c(0.67, 0.33))
 ```
+
+*International Classification of Diseases, Tenth Revision* (ICD-10) categories taken from the National Center for Health Statistics list of 130 Causes of infant death: Disorders related to short gestation and low birth weight, not elsewhere classified (P07); Congenital malformations, deformations and chromosomal abnormalities (Q00-Q99); Sudden infant death syndrome (R95); Newborn affected by maternal complications of pregnancy (P01); All other causes (all other codes)
 
 **Author Contributions**
 
@@ -397,9 +394,13 @@ Acknowledgements: Corinne Riddell is a post-doctoral researcher at McGill Univer
 
 **References**
 
-1. [ref NCHS data brief # 120]. https://www.cdc.gov/nchs/data/databriefs/db120.pdf
+1. Xu J, Murphy SL, Kochanek KD, Arias E. Mortality in the United States, 2015. NCHS Data Brief. 2016;(267):1–8.
 
-2. Centers for Disease Control and Prevention, National Center for Health Statistics. Underlying cause of death 1999-2015 on CDC WONDER online database, released December, 2016. Data are from the Multiple Cause of Death Files, 1999-2015, as compiled from data provided by the 57 vital statistics jurisdictions through the Vital Statistics Cooperative Program; December 2016. Available from: https://wonder.cdc.gov/ [cited 22 Dec 2016]. 
+**2. Cite SH research letter?**
+
+3. Centers for Disease Control and Prevention, National Center for Health Statistics. Underlying cause of death 1999-2015 on CDC WONDER online database, released December, 2016. Data are from the Multiple Cause of Death Files, 1999-2015, as compiled from data provided by the 57 vital statistics jurisdictions through the Vital Statistics Cooperative Program; December 2016. Available from: https://wonder.cdc.gov/ [cited 22 Dec 2016]. 
+
+4. March of Dimes. 2016 Premature birth report card. http://www.marchofdimes.org/materials/premature-birth-report-card-united-states.pdf. Accessed on Dec 31, 2016.
 
 **Figure Legends**
 
