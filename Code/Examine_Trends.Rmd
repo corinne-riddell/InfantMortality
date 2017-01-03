@@ -14,8 +14,9 @@ Department of Epidemiology, Biostatistics and Occupational Health, McGill Univer
 Address correspondence to: Corinne Riddell, PhD, Department of Epidemiology, Biostatistics &
 Occupational Health, McGill University, 1020 Pine Avenue West, Room 36B, Montreal, QC H3A 1A2, Canada. Email: corinne.riddell@mail.mcgill.ca
 
-Current word count (text only, exclusive of title, references, and tables): XXX
-Date of last revision: Dec XX, 2016
+Current word count (text only, exclusive of title, references, and tables): 595
+
+Date of last revision: January 3, 2017
 
 **Introduction**
 
@@ -262,7 +263,7 @@ both2 <- rbind(both, aggregate.sex)
 
 **Results**
 
-From 2005 to 2012, the infant mortality rate for Non-Hispanic blacks decreased from `r round(both2$Black_IMR[both2$Year == 2005 & both2$Gender == "Both Genders"], 1)` to `r round(both2$Black_IMR[both2$Year == 2012 & both2$Gender == "Both Genders"], 1)` per 1,000 infants (**Figure 1a**). Thereafter, the infant mortality rate in blacks plateaued, and increases from `r round(both2$Black_IMR[both2$Year == 2014 & both2$Gender == "Both Genders"], 1)` to `r round(both2$Black_IMR[both2$Year == 2015 & both2$Gender == "Both Genders"], 1)` per 1,000 from 2014 to 2015. For Non-Hispanic whites, the rate decreased monotonically from `r round(both2$White_IMR[both2$Year == 2005 & both2$Gender == "Both Genders"], 1)` to `r round(both2$White_IMR[both2$Year == 2015 & both2$Gender == "Both Genders"], 1)` per 1,000 from 2005 to 2015. Because the black infant mortality rate declined faster than the white rate, excess events in blacks fell from `r round(both2$RD[both2$Year == 2005 & both2$Gender == "Both Genders"], 1)` deaths per 1,000 infants in 2005 to `r round(both2$RD[both2$Year == 2012 & both2$Gender == "Both Genders"], 1)` deaths per 1,000 in 2012 (**Figure 1b**), but rose to `r round(both2$RD[both2$Year == 2015 & both2$Gender == "Both Genders"], 1)` in 2015. These excess events imply nearly `r round(both2$Black.Deaths[both2$Year == 2015 & both2$Gender == "Both Genders"] - (both2$White_IMR[both2$Year == 2015 & both2$Gender == "Both Genders"]/1000*both2$Black.Pop[both2$Year == 2015 & both2$Gender == "Both Genders"]), -3)` additional infant deaths among the `r both2$Black.Pop[both2$Year == 2015 & both2$Gender == "Both Genders"]` blacks infants compared to the number of deaths that would have occurred had they experienced the mortality rate among whites.
+From 2005 to 2012, the infant mortality rate for Non-Hispanic blacks decreased from `r round(both2$Black_IMR[both2$Year == 2005 & both2$Gender == "Both Genders"], 1)` to `r round(both2$Black_IMR[both2$Year == 2012 & both2$Gender == "Both Genders"], 1)` per 1,000 infants (**Figure 1a**). Thereafter, the infant mortality rate in blacks plateaued, and increases from `r formatC(round(both2$Black_IMR[both2$Year == 2014 & both2$Gender == "Both Genders"], 1), format='f', digits = 1)` to `r round(both2$Black_IMR[both2$Year == 2015 & both2$Gender == "Both Genders"], 1)` per 1,000 from 2014 to 2015. For Non-Hispanic whites, the rate decreased monotonically from `r round(both2$White_IMR[both2$Year == 2005 & both2$Gender == "Both Genders"], 1)` to `r round(both2$White_IMR[both2$Year == 2015 & both2$Gender == "Both Genders"], 1)` per 1,000 from 2005 to 2015. Because the black infant mortality rate declined faster than the white rate, excess events in blacks fell from `r round(both2$RD[both2$Year == 2005 & both2$Gender == "Both Genders"], 1)` deaths per 1,000 infants in 2005 to `r formatC(round(both2$RD[both2$Year == 2012 & both2$Gender == "Both Genders"], 1), format='f', digits = 1)` deaths per 1,000 in 2012 (**Figure 1b**), but rose to `r round(both2$RD[both2$Year == 2015 & both2$Gender == "Both Genders"], 1)` in 2015. These excess events imply nearly `r round(both2$Black.Deaths[both2$Year == 2015 & both2$Gender == "Both Genders"] - (both2$White_IMR[both2$Year == 2015 & both2$Gender == "Both Genders"]/1000*both2$Black.Pop[both2$Year == 2015 & both2$Gender == "Both Genders"]), -3)` additional infant deaths among the `r formatC(both2$Black.Pop[both2$Year == 2015 & both2$Gender == "Both Genders"], format='f', digits=0)` blacks infants compared to the number of deaths that would have occurred had they experienced the mortality rate among whites.
 
 ```{r imr_plot, echo=F, fig.width=9, fig.height=3}
 first <- ggplot(subset(both2, Gender == "Both Genders" & Year >= 2005), aes(x = Year, y = Black_IMR))  + 
@@ -369,7 +370,7 @@ grid.arrange(a, b, blank, layout_matrix = rbind(c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
 
 **Author Contributions**
 
-Dr. Riddell had full access to all of the data and takes responsibility for the integrity of the data and the accuracy of the analysis. A replication data set including the raw data and statistical code to reproduce the paper results is publicly available on github: https://github.com/corinne-riddell/InfantMortality/.
+Dr. Riddell had full access to all of the data and takes responsibility for the integrity of the data and the accuracy of the analysis. A replication data set including the raw data and statistical code to reproduce the paper in its entirety is publicly available on github: https://github.com/corinne-riddell/InfantMortality/.
 
 Study concept and design: Riddell, Harper, Kaufman
 
@@ -396,7 +397,7 @@ Acknowledgements: Corinne Riddell is a post-doctoral researcher at McGill Univer
 
 1. Xu J, Murphy SL, Kochanek KD, Arias E. Mortality in the United States, 2015. NCHS Data Brief. 2016;(267):1–8.
 
-**2. Cite SH research letter?**
+**2. Harper S, Kaufman JS, Cooper RS. Declining United States Life Expectancy: A First Look.** 
 
 3. Centers for Disease Control and Prevention, National Center for Health Statistics. Underlying cause of death 1999-2015 on CDC WONDER online database, released December, 2016. Data are from the Multiple Cause of Death Files, 1999-2015, as compiled from data provided by the 57 vital statistics jurisdictions through the Vital Statistics Cooperative Program; December 2016. Available from: https://wonder.cdc.gov/ [cited 22 Dec 2016]. 
 
