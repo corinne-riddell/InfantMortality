@@ -1,6 +1,6 @@
 ---
 title: Understanding the recent increase in black infant mortality in the US
-output: word_document
+output: html_document
 ---
 
 Corinne A Riddell, PhD
