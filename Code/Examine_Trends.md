@@ -75,13 +75,11 @@ Acknowledgements: Corinne Riddell is a post-doctoral researcher at McGill Univer
 
 **Figure 1: Infant mortality and excess risk of death for Non-Hispanic blacks compared with whites, United States, 2005-2015**
 
-![](Examine_Trends_files/figure-markdown_github/figure1-1.png)
-
-![](Examine_Trends_files/figure-markdown_github/figure2_setup-1.png)
+![Figure 1](Examine_Trends_files/Figure1.tiff)
 
 **Figure 2: Trends in COD-specific mortality for the top four causes of infant death and all other causes combined for Non-Hispanic blacks and whites, United States, 2005-2015**
 
-![](Examine_Trends_files/figure-markdown_github/figure2-1.png)
+![Figure 2](Examine_Trends_files/Figure2.tiff)
 
 **Figure 2 Footnotes:**
 
