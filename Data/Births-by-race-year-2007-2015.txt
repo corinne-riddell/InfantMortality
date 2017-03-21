@@ -1,0 +1,67 @@
+"Notes"	"Race"	"Race Code"	"Year"	"Year Code"	Births
+	"Black or African American"	"2054-5"	"2007"	"2007"	627191
+	"Black or African American"	"2054-5"	"2008"	"2008"	623029
+	"Black or African American"	"2054-5"	"2009"	"2009"	609584
+	"Black or African American"	"2054-5"	"2010"	"2010"	589808
+	"Black or African American"	"2054-5"	"2011"	"2011"	582345
+	"Black or African American"	"2054-5"	"2012"	"2012"	583489
+	"Black or African American"	"2054-5"	"2013"	"2013"	583834
+	"Black or African American"	"2054-5"	"2014"	"2014"	588891
+	"Black or African American"	"2054-5"	"2015"	"2015"	589047
+"Total"	"Black or African American"	"2054-5"			5377218
+	"White"	"2106-3"	"2007"	"2007"	2310333
+	"White"	"2106-3"	"2008"	"2008"	2267817
+	"White"	"2106-3"	"2009"	"2009"	2212552
+	"White"	"2106-3"	"2010"	"2010"	2162406
+	"White"	"2106-3"	"2011"	"2011"	2146566
+	"White"	"2106-3"	"2012"	"2012"	2134044
+	"White"	"2106-3"	"2013"	"2013"	2129196
+	"White"	"2106-3"	"2014"	"2014"	2149302
+	"White"	"2106-3"	"2015"	"2015"	2130279
+"Total"	"White"	"2106-3"			19642495
+"Total"					25019713
+"---"
+"Dataset: Natality, 2007-2015"
+"Query Parameters:"
+"Title: Births-by-race-year"
+"Age of Mother 9: All"
+"Birthplace: All"
+"Birth Weight 12: All"
+"Chronic Hypertension: All"
+"Delivery Method: All"
+"Diabetes: All"
+"Eclampsia: All"
+"Education: All"
+"Gender: All"
+"Hispanic Origin: Non-Hispanic White, Non-Hispanic Black"
+"Live Birth Order: All"
+"LMP Gestational Age 11: All"
+"Marital Status: All"
+"Medical Attendant: All"
+"Month: All"
+"Month Prenatal Care Began: All"
+"OE Gestational Age 11: All"
+"Plurality or Multiple Birth: All"
+"Pregnancy-associated Hypertension: All"
+"Race: Black or African American, White"
+"States: All"
+"Tobacco Use: All"
+"Weekday: All"
+"Year: All, 2007 to 2015"
+"Group By: Race, Year"
+"Show Totals: True"
+"Show Zero Values: False"
+"Show Suppressed: False"
+"Calculate Rates Per: 1,000"
+"Population Option: No populations shown because rates were not selected."
+"---"
+"Help: See http://wonder.cdc.gov/wonder/help/Natality.html for more information."
+"---"
+"Query Date: Mar 21, 2017 3:21:10 PM"
+"---"
+"Suggested Citation: United States Department of Health and Human Services (US DHHS), Centers for Disease Control and Prevention"
+"(CDC), National Center for Health Statistics (NCHS), Division of Vital Statistics, Natality public-use data 2007-2015, on CDC"
+"WONDER Online Database, February 2017. Accessed at http://wonder.cdc.gov/natality-current.html on Mar 21, 2017 3:21:10 PM"
+"---"
+Caveats:
+"1. Each birth record represents one living baby."
