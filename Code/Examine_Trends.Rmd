@@ -1,8 +1,6 @@
 ---
 title: "Understanding the recent increase in black infant mortality in the US"
-output:
-  word_document: default
-  html_document: default
+output: github_document 
 ---
 
 Corinne A Riddell, PhD
@@ -34,22 +32,28 @@ library(plotly)
 library(dplyr)
 library(gridExtra)
 library(grid)
-library(epiR)
 ```
 
 ```{r import_birth_denominators, echo=F}
 #read in the CDC wonder birth denominator data
 #for race == Black or White only, and Non-hispanic blacks and whites only.
+#note: births were only imported for year 2005 and after, while other files go back to 1999.
+
 births <- read.csv("/Users/corinneriddell/Documents/repos/InfantMortality/Data/Births-by-race-year-cleaned.csv",
                      header = T)
 
 births <- births %>% mutate(Race = relevel(Race, ref = "White")) %>%
-  mutate(Race = plyr::revalue(Race, c("White"="White", "Black or African American"="Black")))
+                     mutate(Race = plyr::revalue(Race, c("White" = "White", 
+                                                         "Black or African American" = "Black")))
 ```
 
 ```{r import_cod_data, echo=F}
 #read in the CDC wonder COD-specific mortality data
 #for NH blacks and NH whites, stratified by year (1999-2015)
+#note: In a previous version of the manuscript, we calculated the infant mortality rate using population denominators.
+       #I have kept these calculations here for comparison purposes. In the final version, we use birth denominators,
+       #which are also calculated in this file.
+
 im.cod.dat <-  read.csv("/Users/corinneriddell/Documents/repos/InfantMortality/Data/InfantMortality_by_COD_cleaned.csv", 
                         header = T)
 
@@ -58,28 +62,22 @@ im.cod.dat <- im.cod.dat %>%
          Hispanic_Origin == "Not Hispanic or Latino") %>%
   select(Race, Year, Deaths, Population, ICD10.130.Infants, Crude_Rate) %>%
   mutate(Race = relevel(Race, ref = "White")) %>%
-  mutate(Race = plyr::revalue(Race, c("White"="White", "Black or African American"="Black")),
+  mutate(Race = plyr::revalue(Race, c("White" = "White", "Black or African American" = "Black")),
          Population = as.numeric(as.character(Population)),
-         RatePer1000Population = (Deaths/Population)*1000,
+         RatePer1000Population = (Deaths/Population)*1000, #OLD calculation
          ICD10 = as.character(ICD10.130.Infants))
 
 #dim(im.cod.dat)
 im.cod.dat <- merge(im.cod.dat, births, by = c("Race", "Year"), all.x = T)
 #dim(im.cod.dat)
 
-im.cod.dat$RatePer1000Births <- (im.cod.dat$Deaths/im.cod.dat$Births)*1000
-
-# ggplot(im.cod.dat, aes(y = Births, x = Year)) + geom_line(aes(col = Race)) + 
-#   geom_point(aes(y = Population, col = Race))
-#Note that for whites the Births are higher than the population of infants, 
-#but for blacks the reverse is true
-#why would this be the case?
-
-#ggplot(im.cod.dat, aes(y = RatePer1000Births, x = Year)) + geom_point(aes(col = Race))
+im.cod.dat$RatePer1000Births <- (im.cod.dat$Deaths/im.cod.dat$Births)*1000 #FINAL calculation
 ```
 
 ```{r create_cod_aggregated_variables, echo=F}
-#cod_recode marks those rows that correspond to the FOURTEEN leading causes of death
+#cod_recode marks those rows that correspond to the FOURTEEN leading causes of death. In the final version, we consider the leading
+#FOUR causes only.
+
 im.cod.dat$cod_recode <- NA
 im.cod.dat$cod_recode[im.cod.dat$ICD10.130.Infants == 
                         "#Congenital malformations, deformations and chromosomal abnormalities (Q00-Q99)"] <- "Congenital Malformations"
@@ -145,19 +143,18 @@ im.cod.dat2 <- im.cod.dat %>% filter(is.na(cod_recode) == F) %>%
 
 rm(im.cod.dat)
 
-#calculate the infant mortality rate for the top FOUR causes of infant death, by year and race
+#calculate the infant deaths for the top FOUR causes of infant death, by year and race
 total4 <- im.cod.dat2 %>% group_by(Race, Year) %>%
-  filter(cod_recode %in% c("Congenital Malformations", "SIDS", 
-                           "Short Gestation/Low Birthweight", "Maternal Complications")) %>%
-  summarise(Deaths.top4 = sum(Deaths))
+                          filter(cod_recode %in% c("Congenital Malformations", "SIDS", 
+                                                   "Short Gestation/Low Birthweight", "Maternal Complications")) %>%
+                          summarise(Deaths.top4 = sum(Deaths))
 
 im.cod.dat_top4 <- im.cod.dat2 %>% 
-  filter(cod_recode %in% c("Congenital Malformations", "SIDS", 
-                           "Short Gestation/Low Birthweight", "Maternal Complications")
-         )
+                   filter(cod_recode %in% c("Congenital Malformations", "SIDS", 
+                                            "Short Gestation/Low Birthweight", "Maternal Complications"))
 ```
 
-```{r setup_data, echo=F}
+```{r read_in_aggregate_mortality_data, echo=F}
 #read in a separate file, where the deaths are aggregated over all COD
 #note: this dataset is stratified by gender, but the previous one was not
 im.dat <-  read.csv("/Users/corinneriddell/Documents/repos/InfantMortality/Data/InfantMortalityData.csv",
@@ -175,7 +172,7 @@ imdat.subset <- im.dat %>%
 
 rm(im.dat)
 
-#calculate the total infant deaths by race and year
+#calculate the TOTAL infant deaths by race and year
 totals <- imdat.subset %>% group_by(Race, Year) %>% 
   summarise(Deaths.all = sum(Deaths), #this sums across gender
             Population = sum(Population)) 
@@ -188,7 +185,7 @@ totals_top4 <- merge(totals, total4, by = c("Race", "Year"))
 
 rm(totals, total4)
 
-#calculate the rate of deaths from all other causes
+#calculate the rate of deaths from "all other causes" (all causes not in the top four causes of death)
 totals_top4 <- totals_top4 %>% mutate(Deaths = Deaths.all - Deaths.top4,
                                       RatePer1000Population = (Deaths/Population)*1000,
                                       RatePer1000Births = (Deaths/Births)*1000,
@@ -221,8 +218,12 @@ white2 <- subset(im.cod.dat_top4, Race == "White") %>%
 
 both.cod <- merge(black2, white2, by = c("Year", "cod_recode", "cod_recode2"))
 rm(black2, white2)
+```
 
+```{r calculate_RR_RD, echo=F} 
 #add risk ratio and risk difference to the data frame
+#note: we have two versions: one using birth denominators (_births) and the other using population denominators (_popn)
+
 both.cod <- both.cod %>% mutate(RR_popn = Black_IMR_popn/White_IMR_popn, RD_popn = Black_IMR_popn - White_IMR_popn,
                                 RR_bir = Black_IMR_births/White_IMR_births, RD_bir = Black_IMR_births - White_IMR_births)
 
@@ -295,6 +296,7 @@ Acknowledgements: Corinne Riddell is a post-doctoral researcher at McGill Univer
 **Figure 1: Infant mortality and excess risk of death for Non-Hispanic blacks compared with whites, United States, 2005-2015**
 
 ```{r imr_plot_popn, echo=F}
+#OLD: uses population denominator. Kept here for comparison purposes.
 imr_plot_1a <- ggplot(subset(both, Year >= 2005), aes(x = Year, y = Black_IMR_popn))  + 
   geom_segment(aes(y = 0, yend = 14.3, x=2005, xend=2005), lty =3, col = "grey37", lwd = 0.5) +
   geom_segment(aes(y = 0, yend = 11.1, x=2012, xend=2012), lty =3, col = "grey37", lwd = 0.5) + 
@@ -340,6 +342,7 @@ imr_plot_1b <- ggplot(subset(both, Year >= 2005), aes(x = Year, y = Black_IMR_bi
 ```
 
 ```{r RD_plot_popn, echo=F}
+#OLD: uses population denominator. Kept here for comparison purposes.
 imr_plot_2a <- ggplot(subset(both, Year >= 2005), aes(x = Year, y = RD_popn))  + 
   geom_segment(aes(y = 0, yend = 8.4, x = 2005, xend = 2005), lty = 3, col = "grey37", lwd = 0.5) +
   geom_segment(aes(y = 0, yend = 6.0, x = 2012, xend = 2012), lty = 3, col = "grey37", lwd = 0.5) + 
@@ -381,6 +384,7 @@ grid.arrange(imr_plot_1b, imr_plot_2b, ncol = 2)
 ```
 
 ```{r figure2_setup_popn, echo=F, warning=F, eval=T}
+#OLD: uses population denominator. Kept here for comparison purposes.
 rate.by.cod <- ggplot(subset(both.cod, Year >= 2005 & cod_recode!= "All other causes"), aes(x = Year, y = Black_IMR_popn*100)) + 
             geom_segment(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode!= "All other causes"), 
                          aes(yend = Black_IMR_popn*100, y = 0, xend = Year), lty = 3) +
@@ -451,11 +455,12 @@ rate.rest.b <- ggplot(subset(both.cod, Year >= 2005 & cod_recode== "All other ca
          strip.background = element_blank(), panel.border = element_rect(colour = "black"))
 ```
 
-**Figure 2: Trends in COD-specific mortality for the top four causes of infant death and all other causes combined for Non-Hispanic blacks and whites, United States, 2005-2015**
-
-```{r figure2,  echo=F, fig.width=5.5, fig.height=8.25, warning=F, eval=T, message = F}
+```{r blank, echo=F}
 blank <- grid.rect(gp=gpar(col="white"))
+```
 
+**Figure 2: Trends in COD-specific mortality for the top four causes of infant death and all other causes combined for Non-Hispanic blacks and whites, United States, 2005-2015**
+```{r figure2,  echo=F, fig.width=5.5, fig.height=8.25, warning=F, eval=T, message = F}
 grid.arrange(rate.by.cod.b, rate.rest.b, blank, 
              layout_matrix = rbind(c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), 
                                    c(2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3)), 
