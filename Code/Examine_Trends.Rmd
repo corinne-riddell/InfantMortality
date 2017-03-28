@@ -16,17 +16,17 @@ Department of Epidemiology, Biostatistics and Occupational Health, McGill Univer
 Address correspondence to: Corinne Riddell, PhD, Department of Epidemiology, Biostatistics &
 Occupational Health, McGill University, 1020 Pine Avenue West, Room 36B, Montreal, QC H3A 1A2, Canada. Email: corinne.riddell@mail.mcgill.ca
 
-Current word count (text only, exclusive of title, references, and tables): 596
+Current word count (text only, exclusive of title, references, and tables): 600
 
-Date of last revision: March 21, 2017
+Date of last revision: March 28, 2017
 
 **Introduction**
 
-The infant mortality rate is an important indicator of population health. In a recent report from the Centers for Disease Control and Prevention, it was noted that the US infant mortality rate decreased by 15% in the past decade.^1^ The objective of this research letter is to establish if both blacks and whites benefitted from this decrease equally, by investigating trends in the absolute difference in the infant mortality rates between these populations, for overall and cause-specific mortality.   
+The infant mortality rate is an important indicator of population health. A recent report from the Centers for Disease Control and Prevention reported that the US infant mortality rate decreased by 15% in the past decade.^1^ The objective of this research letter is to establish if both blacks and whites benefitted equally from this decrease. We investigated recent trends in the absolute difference in the overall and cause-specific infant mortality rates between non-Hispanic black and whites.   
 
 **Methods**
 
-We abstracted data on live births and deaths in the first year of life for Non-Hispanic black and white infants from the US National Vital Statistics System for 2005-2015. The infant mortality rate was calculated as the number of deaths (from the final mortality file)^2^ divided by the number of births (from the natality file)^3^, according to race, year, and cause of death. We calculated rates for the top four causes of infant death and for a residual category encapsulating all other causes. The excess event rate among blacks was calculated as the absolute difference between the rates. We do not include confidence intervals because all deaths are included and therefore are not subject to sampling error.^4^ R version 3.2.4 was used to conduct this analysis. No ethical review was required since this study used de-identified data. 
+We abstracted data on live births and deaths in the first year of life for Non-Hispanic black and white infants from the US National Vital Statistics System for 2005-2015. The infant mortality rate was calculated as the number of deaths (mortality file)^2^ divided by the number of births (natality file)^3^, according to race-ethnicity, year, and cause of death. We calculated rates for the top four causes of infant death and for a residual category encapsulating all other causes. The excess event rate among blacks was calculated as the absolute difference between the rates. We do not include confidence intervals because all deaths are included and therefore are not subject to sampling error.^4^ R version 3.2.4 was used to conduct the analysis. No ethical review was required since this study used de-identified data. A replication data set including the raw data and statistical code to reproduce the letter is publicly available on github: [https://github.com/corinne-riddell/InfantMortality/](https://github.com/corinne-riddell/InfantMortality/).
 
 ```{r load_libraries, echo=F, warning=F, message=F}
 library(ggplot2)
@@ -247,17 +247,15 @@ both <- both.cod %>% group_by(Year) %>%
 
 **Results**
 
-From 2005 to 2012, the infant mortality rate for Non-Hispanic blacks decreased from `r round(both$Black_IMR_bir[both$Year == 2005], 1)` to `r round(both$Black_IMR_bir[both$Year == 2012], 1)` per 1,000 infants (**Figure 1a**). Thereafter, the infant mortality rate in blacks plateaued, and increased from `r formatC(round(both$Black_IMR_bir[both$Year == 2014], 1), format='f', digits = 1)` to `r round(both$Black_IMR_bir[both$Year == 2015], 1)` per 1,000 from 2014 to 2015. For Non-Hispanic whites, the rate decreased monotonically from `r round(both$White_IMR_bir[both$Year == 2005], 1)` to `r round(both$White_IMR_bir[both$Year == 2015], 1)` per 1,000 from 2005 to 2015. Because the black infant mortality rate declined faster than the white rate, excess events in blacks fell from `r round(both$RD_bir[both$Year == 2005], 1)` deaths per 1,000 births in 2005 to `r formatC(round(both$RD_bir[both$Year == 2012], 1), format='f', digits = 1)` deaths per 1,000 in 2012, but rose to `r round(both$RD_bir[both$Year == 2015], 1)` in 2015 (**Figure 1b**). These excess events imply over `r round(both$Black.Deaths[both$Year == 2015] - (both$White_IMR_bir[both$Year == 2015]/1000*both$Black.Bir[both$Year == 2015]), -3)` additional infant deaths among the `r formatC(both$Black.Bir[both$Year == 2015], format='f', digits=0)` blacks births compared to the number of deaths that would have occurred had they experienced the mortality rate among whites.
+From 2005 to 2012, the infant mortality rate for Non-Hispanic blacks decreased from `r round(both$Black_IMR_bir[both$Year == 2005], 1)` to `r round(both$Black_IMR_bir[both$Year == 2012], 1)` per 1,000 births (**Figure 1a**). Thereafter, the infant mortality rate in blacks plateaued, and increased from `r formatC(round(both$Black_IMR_bir[both$Year == 2014], 1), format='f', digits = 1)` to `r round(both$Black_IMR_bir[both$Year == 2015], 1)` per 1,000 from 2014 to 2015. For Non-Hispanic whites, the rate decreased monotonically from `r round(both$White_IMR_bir[both$Year == 2005], 1)` to `r round(both$White_IMR_bir[both$Year == 2015], 1)` per 1,000 from 2005 to 2015. Because the black infant mortality rate declined faster than the white rate, excess events in blacks fell from `r round(both$RD_bir[both$Year == 2005], 1)` deaths per 1,000 births in 2005 to `r formatC(round(both$RD_bir[both$Year == 2012], 1), format='f', digits = 1)` deaths per 1,000 in 2012, but rose to `r round(both$RD_bir[both$Year == 2015], 1)` in 2015 (**Figure 1b**). These excess events imply over `r round(both$Black.Deaths[both$Year == 2015] - (both$White_IMR_bir[both$Year == 2015]/1000*both$Black.Bir[both$Year == 2015]), -3)` additional infant deaths among the `r formatC(both$Black.Bir[both$Year == 2015], format='f', digits=0)` blacks births compared to the number of expected deaths if they had experienced the same mortality rate as whites.
 
 **Figure 2** shows trends in cause-specific mortality for the four leading causes of infant death and all other causes. Between 2005 and 2011, deaths from short gestation and low birthweight decreased for blacks, but have plateaued in recent years. For other leading causes (Congenital malformations, Sudden Infant Death Syndrome (SIDS), and maternal complications), rates among blacks and whites decreased between 2005 and 2015, although deaths related to both SIDS and congenital malformations increased for blacks last year. Progress has stalled with respect to all other causes of infant death in recent years, and last year also saw a relatively larger increase for blacks compared with whites.
 
 **Comment**
 
-The sustained progress in reducing infant mortality among blacks since 2005 stalled in the past few years, leading to increases in the absolute inequality in infant mortality between blacks and whites in two of the past three years. No single cause appears solely responsible for the recent increase in black infant mortality. The preterm birth rate is nearly 50% higher for blacks compared with whites,^5^ and black infants experience nearly four times as many deaths related to short gestation/low birthweight, making it the leading cause of infant death among blacks. Interventions to further reduce the rate of preterm birth among blacks appear the most promising option for reducing black infant mortality, and the absolute inequality between black and white infants. 
+The sustained progress in reducing infant mortality among blacks since 2005 stalled in the past few years, leading to increases in the absolute inequality in infant mortality between blacks and whites in two of the past three years. No single cause appears solely responsible for the recent increase in black infant mortality, and some arbitrariness likely exists in assigning a single underlying cause for many infants. The preterm birth rate is nearly 50% higher for blacks compared with whites,^5^ and black infants experience nearly four times as many deaths related to short gestation/low birthweight, making it the leading cause of infant death among blacks. Interventions to further reduce the rate of preterm birth among blacks appear the most promising option for reducing black infant mortality, and the absolute inequality between black and white infants. 
 
 **Author Contributions**
-
-Dr. Riddell had full access to all of the data and takes responsibility for the integrity of the data and the accuracy of the analysis. A replication data set including the raw data and statistical code to reproduce the paper in its entirety is publicly available on github: https://github.com/corinne-riddell/InfantMortality/.
 
 Study concept and design: Riddell, Harper, Kaufman
 
@@ -271,20 +269,20 @@ Critical revision of the manuscript for important intellectual content: Riddell,
 
 Statistical analysis: Riddell 
 
-Obtained funding: No funding obtained 
+Obtained funding: Dr. Riddell's salary was supported by Dr. Kaufman's Canada Research Chair in Health Disparities. 
 
 Administrative, technical, or material support: None 
 
 Study supervision: Riddell, Harper, Kaufman
 
-Acknowledgements: Corinne Riddell is a post-doctoral researcher at McGill University. Sam Harper was supported by a Chercheur Boursier Junior 1 from the Fonds de la Recherche en Santé du Québec. Jay Kaufman was supported by a Canada Research Chair in Health Disparities. The sources of support had no control over the design and conduct of the study; collection, management, analysis, and interpretation of the data; and preparation, review, or approval of the manuscript. 
+Acknowledgements: Corinne Riddell is a post-doctoral researcher at McGill University. Sam Harper was supported by a Chercheur Boursier Junior 2 from the Fonds de la Recherche en Santé du Québec. Jay Kaufman was supported by a Canada Research Chair in Health Disparities. Dr. Riddell had full access to all of the data and takes responsibility for the integrity of the data and the accuracy of the data analysis. The sources of support had no control over the design and conduct of the study; collection, management, analysis, and interpretation of the data; and preparation, review, or approval of the manuscript; and decision to submit the manuscript for publication. 
 
 
 **References**
 
 1. Mathews TJ, Driscoll AK. Trends in infant mortality in the United States, 2005–2014. NCHS data brief, no 279. Hyattsville, MD: National Center for Health Statistics. 2017.
 
-2. Centers for Disease Control and Prevention, National Center for Health Statistics. Multiple Cause of Death 2005-2015 on CDC WONDER Online Database, released December, 2016. Data are from the Multiple Cause of Death Files, 1999-2015, as compiled from data provided by the 57 vital statistics jurisdictions through the Vital Statistics Cooperative Program. Available from: http://wonder.cdc.gov/mcd-icd10.html [cited 22 Dec 2016]
+2. Centers for Disease Control and Prevention, National Center for Health Statistics. Multiple Cause of Death 2005-2015 on CDC WONDER Online Database, released December, 2016. Data are from the Multiple Cause of Death Files, 2005-2015, as compiled from data provided by the 57 vital statistics jurisdictions through the Vital Statistics Cooperative Program. Available from: http://wonder.cdc.gov/mcd-icd10.html [cited 22 Dec 2016]
 
 3. United States Department of Health and Human Services (US DHHS), Centers for Disease Control and Prevention (CDC), National Center for Health Statistics (NCHS), Division of Vital Statistics, Natality public-use data on CDC WONDER Online Database, for years 2005-2006 available March 2009, and for years 2007-2015 available February 2017. Available from: https://wonder.cdc.gov/natality-current.html [cited 25 Mar 2016]. 
 
@@ -304,16 +302,17 @@ imr_plot_1a <- ggplot(subset(both, Year >= 2005), aes(x = Year, y = Black_IMR_po
   geom_line(aes(col = "Black")) + 
   geom_line(aes(y = White_IMR_popn, col = "White")) +
   ylab("Rate per 1,000 infants") + 
-  scale_y_continuous(limits = c(0, 15.5), breaks = seq(from=0, to=15, by = 3), minor_breaks = seq(from=0, to=15, by = 1)) + 
-  scale_x_continuous(limits = c(2005, 2017), breaks = seq(from=2005, to=2015.5, by = 2)) +
+  scale_y_continuous(limits = c(0, 15.5)) + 
+  scale_x_continuous(limits = c(2005, 2017), labels = seq(2005, 2015, 2), breaks = seq(2005, 2015, 2)) +
   scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = "")) +
-  theme_bw() + theme(legend.position = "none") + ggtitle("a) Infant Mortality Rate") +
-  geom_text(aes(x = 2016, y = 4.9), label = "White", col = "#2166ac", check_overlap = T) +
-  geom_text(aes(x = 2016, y = 11.2), label = "Black", col = "#b2182b", check_overlap = T) +
+  theme_bw() + theme(legend.position = "none", panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  ggtitle("a) Infant Mortality Rate") +
+  geom_text(aes(x = 2015.6, y = 4.9), label = "White", col = "#2166ac", check_overlap = T) +
+  geom_text(aes(x = 2015.6, y = 11.2), label = "Black", col = "#b2182b", check_overlap = T) +
   geom_text(data = subset(both, Year %in% c(2005, 2012, 2015)), 
-            aes(x = Year, y = Black_IMR_popn + 1, label = round(Black_IMR_popn,1)), col = "#b2182b") +
+            aes(x = Year + 0.4, y = Black_IMR_popn + 1, label = round(Black_IMR_popn,1)), col = "#b2182b") +
   geom_text(data = subset(both, Year %in% c(2005, 2012, 2015)), 
-            aes(x = Year, y = White_IMR_popn + 1, label = round(White_IMR_popn,1)), col = "#2166ac")  
+            aes(x = Year + 0.4, y = White_IMR_popn + 1, label = round(White_IMR_popn,1)), col = "#2166ac")  
 
 ```
 
@@ -326,16 +325,16 @@ imr_plot_1b <- ggplot(subset(both, Year >= 2005), aes(x = Year, y = Black_IMR_bi
   geom_line(aes(y = White_IMR_bir, col = "White")) +
   ylab("Rate per 1,000 births") + 
   scale_y_continuous(limits = c(0, 15.5), breaks = seq(from=0, to=15, by = 3), minor_breaks = seq(from=0, to=15, by = 1)) + 
-  scale_x_continuous(limits = c(2005, 2017), breaks = seq(from=2005, to=2015.5, by = 2)) +
+  scale_x_continuous(limits = c(2005, 2017), breaks = seq(from=2005, to=2015, by = 2)) +
   scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = "")) +
   theme_bw() + theme(legend.position = "none") + ggtitle("a) Infant Mortality Rate") +
-  theme(panel.grid.major = element_line(size = 0.5), panel.grid.minor = element_line(size = 0.5)) +
-  geom_text(aes(x = 2016, y = 4.8), label = "White", col = "#2166ac", check_overlap = T) +
-  geom_text(aes(x = 2016, y = 11.7), label = "Black", col = "#b2182b", check_overlap = T) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  geom_text(aes(x = 2015.85, y = 4.8), label = "White", col = "#2166ac", check_overlap = T) +
+  geom_text(aes(x = 2015.85, y = 11.7), label = "Black", col = "#b2182b", check_overlap = T) +
   geom_text(data = subset(both, Year %in% c(2005, 2012, 2015)), 
-            aes(x = Year, y = Black_IMR_bir + 1, label = round(Black_IMR_bir, 1)), col = "#b2182b") +
+            aes(x = Year + 0.5, y = Black_IMR_bir + 1, label = round(Black_IMR_bir, 1)), col = "#b2182b") +
   geom_text(data = subset(both, Year %in% c(2005, 2012, 2015)), 
-            aes(x = Year, y = White_IMR_bir + 1, label = formatC(round(White_IMR_bir, 1), format = 'f', digits = 1)),
+            aes(x = Year + 0.5, y = White_IMR_bir + 1, label = formatC(round(White_IMR_bir, 1), format = 'f', digits = 1)),
             col = "#2166ac")  
 
 ```
@@ -362,12 +361,12 @@ imr_plot_2b <- ggplot(subset(both, Year >= 2005), aes(x = Year, y = RD_bir))  +
   geom_line() + 
   ylab("Excess events per 1,000 births") + 
   scale_y_continuous(limits = c(0, 10), breaks = seq(from=0, to=10, by = 3), minor_breaks = seq(from=0, to=9, by = 1)) +
-  scale_x_continuous(limits = c(2005, 2017), breaks = seq(from=2005, to=2015.5, by = 2)) +
+  scale_x_continuous(limits = c(2005, 2017), breaks = seq(from=2005, to=2015, by = 2)) +
   theme_bw() + 
   ggtitle("b) Excess events") +
-  theme(panel.grid.major = element_line(size = 0.5), panel.grid.minor = element_line(size = 0.5)) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   geom_text(data = subset(both, Year %in% c(2005, 2012, 2015)), 
-            aes(x = Year, y = RD_bir + 0.5, label = round(RD_bir,1))) 
+            aes(x = Year + 0.5, y = RD_bir + 0.5, label = round(RD_bir,1))) 
 ```
 
 ```{r figure1, fig.width=7, fig.height=3.5, echo=F, eval = T}
@@ -376,9 +375,9 @@ grid.arrange(imr_plot_1b, imr_plot_2b, ncol = 2)
 #        arrangeGrob(imr_plot_1b, imr_plot_2b, ncol = 2),
 #        width = 7, height =3)
 
-pdf("/Users/corinneriddell/Documents/repos/InfantMortality/figure1.pdf", width = 7, height = 3)
-grid.arrange(imr_plot_1b, imr_plot_2b, ncol = 2)
-dev.off()
+# pdf("/Users/corinneriddell/Documents/repos/InfantMortality/figure1.pdf", width = 7, height = 3)
+# grid.arrange(imr_plot_1b, imr_plot_2b, ncol = 2)
+# dev.off()
 ```
 
 ```{r figure2_setup_popn, echo=F, warning=F, eval=T}
@@ -421,16 +420,16 @@ rate.by.cod.b <- ggplot(subset(both.cod, Year >= 2005 & cod_recode!= "All other 
             geom_line(aes(col = "Black")) + facet_wrap( ~ cod_recode2) +
             geom_line(aes(y = White_IMR_births*100, col = "White")) +   
             theme_bw() + ylab("Rate per 100,000 births") + 
-            theme(legend.position = "top") +
+            theme(legend.position = "top", strip.background = element_blank(), panel.border = element_rect(colour = "black")) +
             scale_color_manual(values = c("#b2182b", "#2166ac"), guide = guide_legend(title = "")) +
-            scale_y_continuous(limits = c(-10, 4*100), breaks = seq(from=0, to=4*100, by = 1*100), 
+            scale_y_continuous(limits = c(0, 4*100), breaks = seq(from=0, to=4*100, by = 1*100), 
                                minor_breaks = seq(from=0, to=4*100, by = 0.5*100)) +
-            scale_x_continuous(limits = c(2004, 2016), breaks = seq(from=2005, to=2015.5, by = 2)) +
+            scale_x_continuous(limits = c(2004, 2017), breaks = seq(from=2005, to=2017, by = 2)) +
             geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode!= "All other causes"), 
-                      aes(x = Year, y = (Black_IMR_births + 0.3)*100, label = round(Black_IMR_births*100,1)), col = "#b2182b") +
+                      aes(x = Year + 0.95, y = (Black_IMR_births + 0.3)*100, label = round(Black_IMR_births*100,1)), col = "#b2182b") +
             geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode!= "All other causes"), 
-                      aes(x = Year, y = (White_IMR_births - 0.3)*100, label = round(White_IMR_births*100,1)), col = "#2166ac") +
-  theme(panel.grid.major = element_line(size = 0.5), panel.grid.minor = element_line(size = 0.5))
+                      aes(x = Year + 0.95, y = (White_IMR_births - 0.2)*100, label = round(White_IMR_births*100,1)), col = "#2166ac") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
 rate.rest.b <- ggplot(subset(both.cod, Year >= 2005 & cod_recode== "All other causes"), aes(x = Year, y = Black_IMR_births*100)) + 
             geom_segment(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode== "All other causes"), 
@@ -439,16 +438,17 @@ rate.rest.b <- ggplot(subset(both.cod, Year >= 2005 & cod_recode== "All other ca
             geom_line(aes(y = White_IMR_births*100, col = "White")) +   
             theme_bw() + ylab("Rate per 100,000 births") +
             scale_color_manual(values = c("#b2182b", "#2166ac"), guide = FALSE) +
-            scale_y_continuous(limits = c(-10, 8*100), breaks = seq(from = 0, to = 8*100, by = 1*100), 
+            scale_y_continuous(limits = c(0, 8*100), breaks = seq(from = 0, to = 8*100, by = 1*100), 
                                minor_breaks = seq(from=0, to=8*100, by = 0.5*100)) +
-            scale_x_continuous(limits = c(2004, 2016), breaks = seq(from = 2005, to = 2015.5, by = 2)) +
+            scale_x_continuous(limits = c(2004, 2017), breaks = seq(from = 2005, to = 2017, by = 2)) +
             geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode== "All other causes"), 
-                      aes(x = Year, y = (Black_IMR_births + 0.5)*100, 
+                      aes(x = Year + 1, y = (Black_IMR_births + 0.5)*100, 
                           label = formatC(round(Black_IMR_births*100,1), format = 'f', digits = 1)), col = "#b2182b") +
             geom_text(data = subset(both.cod, Year %in% c(2005, 2012, 2015) & cod_recode== "All other causes"), 
-                      aes(x = Year, y = (White_IMR_births - 0.5)*100, 
+                      aes(x = Year + 1, y = (White_IMR_births - 0.5)*100, 
                           label = formatC(round(White_IMR_births*100,1), format = 'f', digits = 1)), col = "#2166ac")  +
-  theme(panel.grid.major = element_line(size = 0.5), panel.grid.minor = element_line(size = 0.5))
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+         strip.background = element_blank(), panel.border = element_rect(colour = "black"))
 ```
 
 **Figure 2: Trends in COD-specific mortality for the top four causes of infant death and all other causes combined for Non-Hispanic blacks and whites, United States, 2005-2015**
@@ -461,18 +461,11 @@ grid.arrange(rate.by.cod.b, rate.rest.b, blank,
                                    c(2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3)), 
              heights = c(0.67, 0.33))
 
-# ggsave("/Users/corinneriddell/Documents/repos/InfantMortality/Figure2_births.tiff",
+# ggsave("/Users/corinneriddell/Documents/repos/InfantMortality/Figure2.pdf",
 #        arrangeGrob(rate.by.cod.b, rate.rest.b, blank,
 #                    layout_matrix = rbind(c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 #                                          c(2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3)),
 #                    heights = c(0.67, 0.33)), height = 8, width = 6.5)
-
-pdf("/Users/corinneriddell/Documents/repos/InfantMortality/figure2.pdf", width = 8, height = 6.5)
-arrangeGrob(rate.by.cod.b, rate.rest.b, blank,
-            layout_matrix = rbind(c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-                                  c(2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3)),
-            heights = c(0.67, 0.33))
-dev.off()
 ```
 
 **Figure 2 Footnotes:**
