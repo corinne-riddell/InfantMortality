@@ -3,8 +3,10 @@
 
 This repository contains the data, code, and R markdown version of a research letter submitted to *JAMA Pediatrics* on January 16th, 2017. The research letter was revised and resubmitted on March 28th, and accepted for publication on March 29th, 2017. 
 
+To view the R markdown version of this letter, please navigate to [InfantMortality/Code/Examine_Trends.md](https://github.com/corinne-riddell/InfantMortality/blob/master/Code/Examine_Trends.md).
+
 ### Overview
-The infant mortality rate is an important indicator of population health. A recent report from the Centers for Disease Control and Prevention reported that the US infant mortality rate decreased by 15% in the past decade.^1^ The objective of this research letter is to establish if both blacks and whites benefitted equally from this decrease. We investigated recent trends in the absolute difference in the overall and cause-specific infant mortality rates between non-Hispanic black and whites.
+The infant mortality rate is an important indicator of population health. A recent report from the Centers for Disease Control and Prevention reported that the US infant mortality rate decreased by 15% in the past decade. The objective of this research letter is to establish if both blacks and whites benefitted equally from this decrease. We investigated recent trends in the absolute difference in the overall and cause-specific infant mortality rates between non-Hispanic black and whites.
 
 ### How to replicate these analyses
 
