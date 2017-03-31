@@ -9,9 +9,11 @@ The infant mortality rate is an important indicator of population health. A rece
 ### How to replicate these analyses
 
 *If you're familar with github*
+
 If your intention is to replicate our analysis and you are familiar with github, please clone this repository. All of the analysis is contained within the file Code/Examine_Trends.Rmd, and you can run this file within R Studio by running all of the code chunks within this R markdown document. Before you do, you'll need to update all the pathways to the data to your cloned repository! These are found on lines 42, 57, and 160 of the Rmd file. To re-create our research letter, use the "Knit" button to knit to word or html. 
 
 *If you're new to github*
+
 If you are unfamiliar with github, but familiar with R and RStudio, you may wish to download the analysis file by navigating to Code/Examine_Trends.Rmd. You can download the raw version of this file and open locally within RStudio. You will also need to download three data files that are referenced on lines 42, 57, and 160 of the Rmd file. They can be found in the Data folder. Please update the pathways to read these data from your local directory where you've saved these files. You can then run the code chunks within RStudio to replicate the analsyis. To replicate the paper, you can use the "Knit" button to knit to work or html.
 
 Happy Replicating! Reproducible Research FTW!
