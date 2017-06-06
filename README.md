@@ -1,7 +1,7 @@
 # Understanding the recent increase in black infant mortality in the US
 ### Corinne A Riddell, [Sam Harper](samharper.org), and [Jay S Kaufman](jayskaufman.com)
 
-This repository contains the data, code, and R markdown version of a research letter submitted to *JAMA Pediatrics* on January 16th, 2017. The research letter was revised and resubmitted on March 28th, and accepted for publication on March 29th, 2017. Here is the DOI, if you'd like to cite this work: [![DOI](https://zenodo.org/badge/76671514.svg)](https://zenodo.org/badge/latestdoi/76671514)
+This repository contains the data, code, and R markdown version of a research letter submitted to *JAMA Pediatrics* on January 16th, 2017. The research letter was revised and resubmitted on March 28th, and accepted for publication on March 29th, 2017. Here is the DOI, if you'd like to cite this work: [![DOI](https://zenodo.org/badge/76671514.svg)](https://zenodo.org/badge/latestdoi/76671514).
 
 To view the R markdown version of this letter, please navigate to [InfantMortality/Code/Examine_Trends.md](https://github.com/corinne-riddell/InfantMortality/blob/master/Code/Examine_Trends.md).
 
